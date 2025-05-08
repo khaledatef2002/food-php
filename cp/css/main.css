@@ -1,0 +1,58 @@
+
+.form-switch .form-check-input:checked {
+    background-color: #477ABE;
+}
+
+.hide-radio label{
+    box-shadow: none !important;
+}
+
+.hide-radio label input{
+    -webkit-appearance: none;
+}
+
+.hide-radio label:has(input:checked){
+    background-color: #0089ff !important;
+    color: white !important;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+
+.spinner-button-loading:enabled .lds-dual-ring{
+    display:none;
+}
+
+.spinner-button-loading:not([data-min]):disabled .content-button-loading{
+    display:none;
+}
+.spinner-button-loading[data-min]:disabled .lds-dual-ring{
+    display:none;
+}
+
+.text-primary
+{
+  color: #0089ff !important;
+}

@@ -1,0 +1,1 @@
+<div><bdi>Copyright Diafh &copy;</bdi></div>
