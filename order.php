@@ -60,12 +60,11 @@
     }
     ?>
   </div>
-  <?php if ($site_setting['visa_av'] == 1) : ?>
-    <ul class="col-12 position-absolute d-flex justify-content-center" style="bottom:45px;column-gap:35px;">
-      <li class="d-inline-block" style="list-style: none;width: fit-content"><?php echo __('privacy_policy'); ?></li>
-      <li class="d-inline-block" style="list-style: none;width: fit-content"><?php echo __('refund_policy'); ?></li>
-    </ul>
-  <?php endif; ?>
+  <ul class="col-12 position-absolute d-flex justify-content-center" style="bottom:45px;column-gap:35px;">
+  <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/privacy" class="text-dark"><?php echo __('privacy_policy'); ?></a></li>
+            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/refund" class="text-dark"><?php echo __('refund_policy'); ?></a></li>
+            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/terms" class="text-dark">الشروط والاحكام</a></li>
+  </ul>
 
 
   <!-- Modal -->

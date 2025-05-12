@@ -27,7 +27,7 @@ return [
     'save_me' => 'حفظ بياناتي للطلب القادم',
     'payment_method' => 'طريقة الدفع',
     'payment_with_hands' => 'الدفع عند الاستلام',
-    'payment_with_visa' => 'الدفع باستخدام Visa/Credit Card',
+    'payment_with_visa' => 'الدفع باستخدام Visa, MasterCard, Meeza',
     'discount_coupons' => 'قسائم الخصم',
     'click_apply' => 'اضغط استخدام لتفعيل الكود',
     'enter_it_here' => 'ادخلها هنا',

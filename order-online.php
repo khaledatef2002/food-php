@@ -128,12 +128,11 @@
           <?php } ?>
         </div>
       <?php } ?>
-      <?php if ($site_setting['visa_av'] == 1) : ?>
-        <ul style="list-style: none;display: flex;gap: 30px;justify-content:center;">
-          <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><?php echo __('privacy_policy'); ?></li>
-          <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><?php echo __('refund_policy'); ?></li>
-        </ul>
-      <?php endif; ?>
+      <ul style="list-style: none;display: flex;gap: 30px;justify-content:center;">
+      <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/privacy" class="text-dark"><?php echo __('privacy_policy'); ?></a></li>
+            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/refund" class="text-dark"><?php echo __('refund_policy'); ?></a></li>
+            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/terms" class="text-dark">الشروط والاحكام</a></li>
+      </ul>
     </div>
     <div class="order-footer">
       <p style="text-align:center;margin:0;">
