@@ -352,10 +352,10 @@ function upload_image($files): string
 
 function upload_image_webp($files): string
 {
-    $allowed = ['jpeg', 'jpg', 'png', 'webp'];
+    $allowed = ['jpeg', 'jpg', 'png'];
 
     $original_file_name = $files['name'];
-    $file_extension = strtolower(pathinfo($original_file_name, PATHINFO_EXTENSION));
+    $file_extension = pathinfo($original_file_name, PATHINFO_EXTENSION);
 
     if (!in_array($file_extension, $allowed)) {
         return "FILE_TYPE_ERROR";
@@ -369,7 +369,6 @@ function upload_image_webp($files): string
     $name = time() . rand(100000, 999999) . ".webp";
     $path = '../../uploads/' . $name;
 
-    // Load image depending on type
     switch ($file_extension) {
         case 'jpeg':
         case 'jpg':
@@ -377,36 +376,19 @@ function upload_image_webp($files): string
             break;
         case 'png':
             $img = imagecreatefrompng($files['tmp_name']);
+            
             imagepalettetotruecolor($img);
             imagealphablending($img, true);
             imagesavealpha($img, true);
             break;
-        case 'webp':
-            $img = imagecreatefromwebp($files['tmp_name']);
-            break;
-        default:
-            return "FILE_TYPE_ERROR";
     }
 
     if (!$img) {
         return "FILE_UPLOAD_ERROR";
     }
 
-    // Try different qualities until file < 200 KB
-    $quality = 80;
-    do {
-        imagewebp($img, $path, $quality);
-        $filesize = filesize($path);
-        $quality -= 5; // reduce quality step by step
-    } while ($filesize > 200 * 1024 && $quality > 10);
-
+    imagewebp($img, $path, 60);
     imagedestroy($img);
-
-    if ($filesize > 200 * 1024) {
-        // Still too big even at low quality
-        unlink($path);
-        return "FILE_TOO_LARGE_AFTER_COMPRESSION";
-    }
 
     return '/uploads/' . $name;
 }
