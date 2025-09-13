@@ -208,6 +208,19 @@
                                                 </th>
                                             </tr>
                                             <tr>
+                                                <th class="fw-bold text-dark">صفحة التقييمات</th>
+                                                <th class="d-flex gap-5 text-wrap justify-content-center">
+                                                    <div class="form-check form-switch">
+                                                        <input name="rating-page-view" class="form-check-input" type="checkbox" role="switch" id="rating-page-view">
+                                                        <label class="form-check-label" for="rating-page-view" value="1">عرض</label>
+                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input name="rating-page-remove" class="form-check-input" type="checkbox" role="switch" id="rating-page-remove">
+                                                        <label class="form-check-label" for="rating-page-remove" value="1">حذف</label>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            <tr>
                                                 <th class="fw-bold text-dark">صفحة اطلب دليفري</th>
                                                 <th class="d-flex gap-5 text-wrap justify-content-center">
                                                     <div class="form-check form-switch">

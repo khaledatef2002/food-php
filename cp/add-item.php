@@ -112,7 +112,7 @@
                                     <div class="mb-4 d-flex justify-content-center">
                                         <img id="selectedImage" src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" alt="example placeholder" style="width: 300px;" />
                                     </div>
-                                    <p class="text-center">صور بامتداد (png, jpg, jpeg, webp) فقط.</p>
+                                    <p class="text-center">صور بامتداد (png, jpg, jpeg) فقط.</p>
                                     <div class="d-flex justify-content-center">
                                         <div class="btn btn-primary btn-rounded-1 p-1 px-2">
                                             <label class="form-label text-white m-1" for="customFile1" role="button">اختر صورة</label>

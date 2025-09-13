@@ -251,4 +251,4 @@ setInterval(function(){
   var path = window.location.pathname;
   var page = path.split("/").pop();
   $.post("ajax/set_online_admin.php",{page:page});
-}, 30000)
+}, 1000)

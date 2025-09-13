@@ -336,7 +336,6 @@ $("#item_info button:last-of-type").click(function(){
     options: options
   }
   $.post("ajax/add_item_cart.php", {data:data}, function(result){
-    console.log(result)
     var data = JSON.parse(result)
     $(".order-footer").find("span.count").text(data.count)
     $(".order-footer").find("span.price").text(data.price + " " + currency)
@@ -453,6 +452,10 @@ $("#user_info button:last-of-type").click(function(){
   {
     $("#user_info input[name='how_pay']").notify(lang.choose_payment, "error")
   }
+  else if($("input[name='acceptance']").is(":checked") == false)
+  {
+    $("#user_info #accept_terms").notify("يجب الموافقة على الشروط والاحكام", "error")
+  }
   else
   {
     $("#final_info .how_pay").text((how_pay == 0) ? lang.payment_with_hands : lang.payment_with_visa)
@@ -470,7 +473,6 @@ $("#user_info button:last-of-type").click(function(){
     }
     
     $.post("ajax/get_final_info.php", {data: to_send}, function(result){
-      console.log(result)
       var data = JSON.parse(result)
       var discount = 0
 
@@ -572,8 +574,6 @@ $("#user_info button:last-of-type").click(function(){
         }
         
         content = content + "</div><br>"
-        console.log(content)
-        console.log('test')
         $("#final_info .items").append(content)
       })
       
@@ -631,7 +631,7 @@ $("#final_info button:last-of-type").click(async function(){
       phone: phone
     }
   
-    var to_send = {"phone": phone, "discount": discount_data, "del" : delivery}
+    var to_send = {"phone": phone, "discount": discount_data, "del" : delivery, "method": how_pay}
   
     var text = `
     ----------------
@@ -658,7 +658,6 @@ $("#final_info button:last-of-type").click(async function(){
     `
     var form_data = data;
     $.post("ajax/get_final_info.php", {data: to_send}, function(result){
-      console.log(result)
       var data = JSON.parse(result)
       text = `
       ${data.del_time}` + text
@@ -756,27 +755,20 @@ $("#final_info button:last-of-type").click(async function(){
       if(how_pay == 1)
       {
         $.post("ajax/pay-visa.php", {del: delivery,name: $("#user_info input.name").val(), phone: phone, data: order_info}, function(res){
-          console.log(res)
           var res = JSON.parse(res);
           if(res.res == "success")
           {
-            var link = "https://checkout.kashier.io/?" + 
-            "merchantId=" + encodeURIComponent(res.merchantId) + "&" +
-            "orderId=" + encodeURIComponent(res.orderId) + "&" +
-            "amount=" + encodeURIComponent(res.amount) + "&" +
-            "currency=EGP&" +
-            "hash=" + res.hash + "&" +
-            "mode=live&" +
-            "merchantRedirect=" + res.merchantRedirect + "&" +
-            "allowedMethods=card,wallet&" +
-            "redirectMethod=get&" +
-            "display=ar&" +
-            "serverWebhook=" + encodeURIComponent(res.webhook);
-            location.href = link;
+            sessionStorage.clear()
+              Checkout.configure({
+              session: {
+                  id: res.session_id
+              }
+            })
+
+            Checkout.showPaymentPage();
           }
           else
           {
-            console.log(res.body)
             $("#final_info button:first-of-type").notify(`${lang.unexpected_error}!`, "error")
           }
         })
@@ -815,7 +807,6 @@ $("#check_discount").click(function(){
     phone: phone
   }
   $.post("ajax/check_discount_code.php", {data:data}, function(result){
-    console.log(result)
     var data = JSON.parse(result)
     if(data.res == "fail")
     {

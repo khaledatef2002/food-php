@@ -12,7 +12,7 @@ if (in_array($_POST['active'], array(0, 1, 2)) && isset($_POST['item_name']) && 
         $item_img = "";
 
         if (isset($_FILES['image']) && !empty($_FILES['image'])) {
-            $msg = upload_image_webp($_FILES['image']);
+            $msg = upload_image($_FILES['image']);
             if ($msg != "FILE_SIZE_ERROR" && $msg != "FILE_TYPE_ERROR") {
                 $item_img = $msg;
             }

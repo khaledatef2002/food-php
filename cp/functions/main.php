@@ -350,49 +350,6 @@ function upload_image($files): string
     }
 }
 
-function upload_image_webp($files): string
-{
-    $allowed = ['jpeg', 'jpg', 'png'];
-
-    $original_file_name = $files['name'];
-    $file_extension = pathinfo($original_file_name, PATHINFO_EXTENSION);
-
-    if (!in_array($file_extension, $allowed)) {
-        return "FILE_TYPE_ERROR";
-    }
-
-    $size = $files['size'];
-    if ($size > 20000000) { // > 20MB
-        return "FILE_SIZE_ERROR";
-    }
-
-    $name = time() . rand(100000, 999999) . ".webp";
-    $path = '../../uploads/' . $name;
-
-    switch ($file_extension) {
-        case 'jpeg':
-        case 'jpg':
-            $img = imagecreatefromjpeg($files['tmp_name']);
-            break;
-        case 'png':
-            $img = imagecreatefrompng($files['tmp_name']);
-            
-            imagepalettetotruecolor($img);
-            imagealphablending($img, true);
-            imagesavealpha($img, true);
-            break;
-    }
-
-    if (!$img) {
-        return "FILE_UPLOAD_ERROR";
-    }
-
-    imagewebp($img, $path, 40);
-    imagedestroy($img);
-
-    return '/uploads/' . $name;
-}
-
 function check_category_exist(int $id): bool
 {
     $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
@@ -725,6 +682,8 @@ function get_system_permissions(): array
         'social-page-add',
         'social-page-edit',
         'social-page-remove',
+        'rating-page-view',
+        'rating-page-remove',
         'order-page-view',
         'order-page-add',
         'order-page-remove',

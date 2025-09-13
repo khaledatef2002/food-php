@@ -307,16 +307,21 @@
             <label style="line-height: 20px;vertical-align: top;"><?php echo __('payment_method'); ?>: </label>
           </div>
           <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
-            <input name="how_pay" id="how_pay_1" type="radio" value="0" onchange="show_hide_email(this)" CHECKED>
+            <input name="how_pay" id="how_pay_1" type="radio" value="0" CHECKED>
             <label style="line-height: 20px;vertical-align: top;" for="how_pay_1"><?php echo __('payment_with_hands'); ?></label>
           </div>
           <?php if ($site_setting['visa_av'] == 1) { ?>
             <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
-              <input name="how_pay" id="how_pay_2" type="radio" value="1" onchange="show_hide_email(this)">
-              <label style="line-height: 20px;vertical-align: top;" for="how_pay_2"><?php echo __('payment_with_visa'); ?></label>
+              <input name="how_pay" id="how_pay_2" type="radio" value="1">
+              <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="how_pay_2"><?php echo __('payment_with_visa'); ?></label>
             </div>
-            <hr>
           <?php } ?>
+          <hr>
+          <div id="accept_terms" class="mt-1" style="margin:auto;width:80%;">
+            <input name="acceptance" id="acceptance" type="checkbox" value="1">
+            <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="acceptance" role="butotn">اوفق على <a href="terms" style="color:var(--radio-back);" target="_blank">الشروط والاحكام</a></label>
+          </div>  
+          <hr>
           <div class="discounts_code" style="margin:auto;width:80%;margin-bottom:10px;">
             <span style="font-weight:bold;margin-bottom:15px;border-bottom: 1px solid black;"><?php echo __('discount_coupons'); ?>: </span> &nbsp; <span class="form-text">(<?php echo __('click_apply'); ?>)</span>
             <div class="coupon" style="margin:auto;width:100%;text-align:center;position:relative;margin-top:15px;">
@@ -448,6 +453,7 @@
   </script>
   <?php include 'temps/jslibs.php'; ?>
   <script src="js/order-online.js"></script>
+  <script src="https://qnbalahli.gateway.mastercard.com/static/checkout/checkout.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
   <script>
     $(document).ready(function() {

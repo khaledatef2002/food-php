@@ -18,13 +18,6 @@ var card_info = new bootstrap.Modal(document.getElementById('card_info'));
 var user_info = new bootstrap.Modal(document.getElementById('user_info'));
 var final_info = new bootstrap.Modal(document.getElementById('final_info'));
 
-
-
-
-
-
-
-
 //Calcuating overall item price (for item info modal)
 function calc_single_item_price()
 {
@@ -76,6 +69,9 @@ $("#item_info .item_count_custom .minus").click(function(){
 
     calc_single_item_price()
 })
+
+
+
 
 history.pushState(null, null, window.top.location.pathname + window.top.location.search);
 window.addEventListener('popstate', (e) => {

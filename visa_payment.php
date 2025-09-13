@@ -15,14 +15,19 @@
   $get_settings_api = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='API_KEY'");
   $API_KEY = mysqli_fetch_assoc($get_settings_api)['value'];
 
-  if (isset($_GET['paymentStatus']) && $_GET['paymentStatus'] == "SUCCESS" && check_signature()) {
-    $order = filter_var($_GET['merchantOrderId'], FILTER_SANITIZE_NUMBER_INT);
-    $kasheir = $_GET['orderId'];
-    $get_order_det = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE id='" . $order . "'");
+  $success = false;
+
+  if (isset($_GET['resultIndicator']))
+  { 
+    $order = $_GET['resultIndicator'];
+    $get_order_det = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE operation_id = '" . $_GET['resultIndicator'] . "' AND status = 0");
+    
     if (mysqli_num_rows($get_order_det) > 0) {
+      save_visa_order($order);
+      $success = true;
       $fetch = mysqli_fetch_assoc($get_order_det);
 
-      $get_id = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE transaction_id='" . $kasheir . "'");
+      $get_id = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE transaction_id='" . $order . "'");
       $id = mysqli_fetch_assoc($get_id)['id'];
 
       $get_wh = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='wh_order'");
@@ -97,7 +102,7 @@
             MSG;
       }
 
-      $total_order = get_total_visa_order_price($order);
+      $total_order = get_total_visa_order_price($id);
       $final_total = $total_order + $fetch['address_price'] - $fetch['total_discount'] - $fetch['delivery_discount'];
       $msg_footer = <<<MSG
 
@@ -105,7 +110,7 @@
           {$lang['pay_info']}
           ----------------
           {$lang['sum']}: {$total_order} {$site_setting['currency']}{$total_disc}
-          {$lang['delivery']}: {$fetch['address_price']} {$site_settings['currency']}{$del_disc}
+          {$lang['delivery']}: {$fetch['address_price']} {$site_setting['currency']}{$del_disc}
           {$lang['total_cost']}: {$final_total} {$site_setting['currency']}
           MSG;
 
@@ -127,32 +132,16 @@
   <?php
     }
   }
-
-  function check_signature()
-  {
-    $queryString = "";
-    $secret = $GLOBALS['API_KEY'];
-    foreach ($_GET as $key => $value) {
-      if ($key == "signature" || $key == "mode") {
-        continue;
-      }
-      $queryString = $queryString . "&" . $key . "=" . $value;
-    }
-    $queryString = ltrim($queryString, $queryString[0]);
-    $signature = hash_hmac('sha256', $queryString, $secret, false);
-    if ($signature == $_GET["signature"]) {
-      return true;
-    } else {
-      return false;
-    }
-  }
   ?>
   <div class="sections order-page col-lg-8 col-12 mx-auto">
     <div class="row col-lg-10 col-md-10 col-sm-10 col-12 mx-auto">
       <div class="item soon">
         <div style="background: var(--icon-back-color);color: var(--icon-color);border-radius: 7px;text-align: center;padding: 10px 45px;font-size:20px;">
-          <i class="glyphicon <?php echo ($_GET['paymentStatus'] == "SUCCESS") ? 'glyphicon-ok-circle' : 'glyphicon-remove-circle'; ?>" style="<?php echo ($_GET['paymentStatus'] == "SUCCESS") ? 'color: green' : 'color: red'; ?>;font-weight: bold;font-size: 40px;"></i>
-          <?php if ($_GET['paymentStatus'] == "SUCCESS") { ?>
+          <?php if ($success) { ?>
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="green" class="bi bi-bag-check mb-2" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+              <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+            </svg>
             <br>
             <?php echo __('we_received_your_order'); ?>.
             <?php if ($site_setting['wh_av']) { ?>
@@ -162,6 +151,10 @@
               <?php echo __('please_enter_send'); ?>
             <?php } ?>
           <?php } else { ?>
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="red" class="bi bi-bag-x mb-2" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/>
+              <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+            </svg>
             <br>
             <?php echo __('visa_payment_error'); ?>
           <?php } ?>

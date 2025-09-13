@@ -25,19 +25,10 @@ $visa_fixed_tax = mysqli_fetch_assoc($get_fixed)['value'];
 $get_percent = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_tax_percent'");
 $visa_percent_tax = mysqli_fetch_assoc($get_percent)['value'];
 
-function generateKashierOrderHash($amount, $orderId)
-{
-    $mid = $GLOBALS['merchantID']; //your merchant id
-    $currency = "EGP"; //eg: "EGP"
-    $secret = $GLOBALS['API_KEY'];
-    $path = "/?payment=" . $mid . "." . $orderId . "." . $amount . "." . $currency;
-    $hash = hash_hmac('sha256', $path, $secret, false);
-    return $hash;
-}
 
-// if ($isAvillable == 0) {
-//     exit;
-// }
+if ($isAvillable == 0) {
+    exit;
+}
 
 if (isset($_POST['name']) && isset($_POST['phone'])) {
     $data = $_POST;
@@ -88,13 +79,11 @@ if (isset($_POST['name']) && isset($_POST['phone'])) {
 
         $order_id = save_pending_order($data['data'], $visa_tax);
 
-        $hash = generateKashierOrderHash($total_amount, $order_id);
-
-        generatePayLink($order_id, $total_amount, $hash);
+        generatePayment($order_id, $total_amount);
     }
 }
 
-function save_pending_order(array $data, float $visa_tax): int
+function save_pending_order(array $data, float $visa_tax)
 {
     $cart = $_SESSION['cart'] ?? array();
 
@@ -141,9 +130,9 @@ function save_pending_order(array $data, float $visa_tax): int
 
     $tax = get_total_tax($cart) + (get_general_tax() * $del_price / 100) + $visa_tax;
 
-    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax) VALUES ('" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax')");
+    $order_id = generate_uuid();
 
-    $order_id = mysqli_insert_id($GLOBALS['conn']);
+    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(id, client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax) VALUES ('" . $order_id . "', '" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax')");
 
     foreach ($cart as $key => $item) {
         $item_info = get_item_info($item['item_id']);
@@ -195,19 +184,69 @@ function save_pending_order(array $data, float $visa_tax): int
     return $order_id;
 }
 
-function generatePayLink($order_id, $amount, $hash)
+function generatePayment($order_id, $amount)
 {
+    $url = 'https://qnbalahli.gateway.mastercard.com/api/rest/version/67/merchant/MALFOOF/session';
     $server = $_SERVER['SERVER_NAME'];
-    $redirect_url = urlencode("https://$server/visa_payment");
-    $webhook_url = urlencode("https://$server/ajax/save_order_visa.php");
+    $redirect_url = "https://$server/visa_payment";
+    
+    $get_settings_title = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='site-title'");
+    $site_title = mysqli_fetch_assoc($get_settings_title)['value'];
+    
+    $get_settings_logo = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='site-logo'");
+    $site_logo = mysqli_fetch_assoc($get_settings_logo)['value'];
+
+    $data = [
+        "apiOperation" => "INITIATE_CHECKOUT",
+        "interaction" => [
+            "operation" => "PURCHASE",
+            "displayControl" => [
+                "billingAddress" => "HIDE",
+                "customerEmail" => "HIDE"
+            ],
+            "merchant" => [
+                "name" => $site_title,
+                "url" => "https://$server",
+                "logo" => "https://$server/$site_logo"
+            ],
+            "returnUrl" => $redirect_url
+        ],
+        "order" => [
+            "currency" => "EGP",
+            "amount" => number_format((float)$amount, 2, '.', ''),
+            "id" => $order_id,
+            "description" => "Payment order for total amount of " . number_format((float)$amount, 2, '.', '')
+        ]
+    ];
+
+    $jsonData = json_encode($data);
+
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_USERPWD, 'merchant.MALFOOF:07fefbc2a09394c7b7db5d3218f15f5b'); // Basic auth
+
+    // Execute the request
+    $response = curl_exec($ch);
+
+    $data = json_decode($response, true);
+
+    // print_r($data);
+    // die();
+    $sessionId = $data['session']['id'] ?? null;
+
+    $operation_id = $data['successIndicator'] ?? null;
+
+    $add_cart = mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET operation_id='" . $operation_id . "' WHERE id='" . $order_id . "'");
 
     echo json_encode([
         "res" => "success",
-        "merchantId" => $GLOBALS['merchantID'],
-        "orderId" => $order_id,
-        "amount" => $amount,
-        "hash" => $hash,
-        "merchantRedirect" => $redirect_url,
-        "webhook" => $webhook_url,
+        "session_id" => $sessionId
     ]);
 }
