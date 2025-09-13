@@ -552,3 +552,55 @@ function __(string $key)
 
     return $lang[$key];
 }
+
+function save_visa_order($order)
+{
+    echo $order;
+    $get_order_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE operation_id='" . $order . "' AND status = 0");
+    if (mysqli_num_rows($get_order_data) > 0) {
+        $order_data = mysqli_fetch_assoc($get_order_data);
+
+        $date = time();
+
+        $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount, method, transaction_id, tax) VALUES ('" . $order_data['client_name'] . "','" . $order_data['client_phone'] . "','" . $order_data['client_branch_id'] . "','" . $order_data['client_branch'] . "','" . $order_data['client_area_id'] . "','" . $order_data['client_area_name'] . "','" . $order_data['client_address'] . "','" . $order_data['address_price'] . "','" . $order_data['client_notice'] . "','" . $date . "','" . $order_data['discount_id'] . "','" . $order_data['discount_code'] . "','" . $order_data['discount_name'] . "','" . $order_data['delivery_discount'] . "','" . $order_data['total_discount'] . "',1,'" . $order_data['operation_id'] . "','" . $order_data['tax'] . "')");
+        $order_id = mysqli_insert_id($GLOBALS['conn']);
+        http_response_code(200);
+        $notify = mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'add', '$order_id')");
+
+        $get_cart_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_cart_req WHERE order_id='" . $order_data['id'] . "'");
+        while ($cart_data = mysqli_fetch_assoc($get_cart_data)) {
+            $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name) VALUES('" . $order_id . "','" . $cart_data['item_id'] . "','" . $cart_data['item_name'] . "','" . $cart_data['item_count'] . "','" . $cart_data['item_price'] . "','" . $cart_data['item_size'] . "','" . $cart_data['item_size_name'] . "')");
+
+            $order_card_id = mysqli_insert_id($GLOBALS['conn']);
+
+            $get_options_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_options_req WHERE order_card_id='" . $cart_data['id'] . "'");
+            while ($options_data = mysqli_fetch_assoc($get_options_data)) {
+                $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_options(order_card_id, option_id, option_value_id, option_name, option_value, option_price) VALUES('" . $order_card_id . "','" . $options_data['option_id'] . "','" . $options_data['option_value_id'] . "','" . $options_data['option_name'] . "','" . $options_data['option_value'] . "','" . $options_data['option_price'] . "')");
+            }
+        }
+
+        mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET status = 1 WHERE operation_id='" . $order . "'");
+    }
+}
+
+function generate_uuid()
+{
+    $time = round(microtime(true) * 10000); // more precision than time()
+    $timeHex = str_pad(dechex($time), 12, '0', STR_PAD_LEFT); // use 12 hex digits
+
+    // Generate remaining parts
+    $rand1 = bin2hex(random_bytes(2)); // 4 hex chars
+    $rand2 = bin2hex(random_bytes(2)); // 4 hex chars
+    $rand3 = bin2hex(random_bytes(2)); // 4 hex chars
+    $rand4 = bin2hex(random_bytes(6)); // 12 hex chars
+
+    // Format: 8-4-4-4-12
+    return sprintf(
+        'pay_%08s-%s-%s-%s-%s',
+        substr($timeHex, 0, 8),
+        substr($timeHex, 8, 4),
+        $rand1,
+        $rand2,
+        $rand4
+    );
+}
