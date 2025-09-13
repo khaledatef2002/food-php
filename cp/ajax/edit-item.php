@@ -19,7 +19,7 @@ if (isset($_POST['id']) && in_array($_POST['active'], array(0, 1, 2)) && isset($
             $item_img = $old_info['img'];
 
             if (isset($_FILES['image']) && $_FILES["image"]["error"] == 0) {
-                $msg = mysqli_real_escape_string($GLOBALS['conn'], upload_image($_FILES['image']));
+                $msg = mysqli_real_escape_string($GLOBALS['conn'], upload_image_webp($_FILES['image']));
                 if ($msg != "FILE_SIZE_ERROR" && $msg != "FILE_TYPE_ERROR") {
                     if (file_exists("../../" . $old_info['img'])) {
                         unlink("../../" . $old_info['img']);
