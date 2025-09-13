@@ -387,7 +387,7 @@ function upload_image_webp($files): string
         return "FILE_UPLOAD_ERROR";
     }
 
-    imagewebp($img, $path, 60);
+    imagewebp($img, $path, 40);
     imagedestroy($img);
 
     return '/uploads/' . $name;
