@@ -89,7 +89,7 @@
           <?php endif; ?>
         </div>
       <?php endif; ?>
-      <?php if (check_user_perm(['social-page-view', 'rating-page-view', 'order-page-view', 'main-page-icon-view'])) : ?>
+      <?php if (check_user_perm(['social-page-view', 'order-page-view', 'main-page-icon-view'])) : ?>
         <hr class="bg-white my-1">
         <li class="nav-item" data-bs-toggle="collapse" data-bs-target="#general" aria-expanded="false" role="button">
           <a class="nav-link py-2 justify-content-between mx-0 px-1">
@@ -115,16 +115,6 @@
                   <i class="fas fa-user-circle"></i>
                 </div>
                 <span class="nav-link-text me-1">وسائل التواصل</span>
-              </a>
-            </li>
-          <?php endif; ?>
-          <?php if (check_user_perm(['rating-page-view'])) : ?>
-            <li class="nav-item">
-              <a class="nav-link py-2 <?php echo ($currentPage == 'ratings.php') ? 'active bg-gradient-primary' : ''; ?>" href="ratings.php">
-                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-star-half-alt"></i>
-                </div>
-                <span class="nav-link-text me-1">التقييمات</span>
               </a>
             </li>
           <?php endif; ?>

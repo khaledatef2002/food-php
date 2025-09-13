@@ -725,8 +725,6 @@ function get_system_permissions(): array
         'social-page-add',
         'social-page-edit',
         'social-page-remove',
-        'rating-page-view',
-        'rating-page-remove',
         'order-page-view',
         'order-page-add',
         'order-page-remove',
