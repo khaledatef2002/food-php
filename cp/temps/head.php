@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" sizes="76x76" href="../<?php echo $site_setting['site-logo']; ?>">
 <link rel="icon" type="image/png" href="../<?php echo $site_setting['site-logo']; ?>">
 <!-- Font Awesome Icons -->
-<link ref="stylesheet" href="libs/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="libs/fontawesome/css/all.min.css">
 <!-- CSS Files -->
 <link id="pagestyle" href="assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
 <link id="pagestyle" href="libs/sweetalert2/sweet.css" rel="stylesheet" />
