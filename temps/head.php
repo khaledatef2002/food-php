@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="libs/bootstrap/css/bootstrap<?php echo ($site_setting['dir'] == 'rtl') ? '.rtl' : ''; ?>.min.css">
 <link rel="stylesheet" href="libs//sweetalert2/sweet.css">
-<link rel="stylesheet" href="css/main.css?id=251">
+<link rel="stylesheet" href="css/main.css?id=252">
 <?php if ($site_setting['dir'] == 'rtl'): ?>
 <link rel="stylesheet" href="css/main.rtl.css">
 <?php endif; ?>
