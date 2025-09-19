@@ -22,6 +22,9 @@
     $is_visa_available = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title = 'visa_av' AND value = '1'");
     $is_visa_available = mysqli_num_rows($is_visa_available) > 0;
 
+    $is_social_media = mysqli_query($GLOBALS['conn'], "SELECT * FROM social_media ");
+    $is_social_media = mysqli_num_rows($is_social_media) > 0;
+
 ?>
 
 <style>
@@ -55,6 +58,8 @@
         --modal-header-back: <?php echo $colors_settings['modal_header_back']; ?>;
         --modal-header-color: <?php echo $colors_settings['modal_header_color']; ?>;
 
-        --home-icons-margins: <?php echo $is_visa_available ? '31px' : '0px'; ?>;
+        --home-icons-visa-margins: <?php echo $is_visa_available ? '26px' : '0px'; ?>;
+        --home-icons-social-margins: <?php echo $is_social_media ? '40px' : '0px'; ?>;
+
     }
 </style>

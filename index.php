@@ -120,6 +120,52 @@
             }
         ?>
     </div>
+    <?php
+        $getSocial = mysqli_query($GLOBALS['conn'], "SELECT * FROM social_media ORDER BY sort ASC");
+        $count = mysqli_num_rows($getSocial);
+        if($count > 0):
+    ?>
+        <ul id="social" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-0" style="flex-wrap: wrap;">
+            <?php 
+                while ($social = mysqli_fetch_assoc($getSocial)) { 
+            ?>
+                <li class="fw-bold" style="cursor:pointer;">
+                    <a href="<?php echo $social['link']; ?>" class="text-dark text-decoration-none">
+                        <?php
+                            switch($social['type']){
+                                case 'tiktok':
+                                    ?>
+                                        <img src="imgs/social-media/tiktok.png" style="width: 35px;height: 35px;" alt="tiktok">
+                                    <?php
+                                    break;
+                                case 'twitter':
+                                    ?>
+                                        <img src="imgs/social-media/x.png" style="width: 35px;height: 35px;" alt="tiktok">
+                                    <?php
+                                    break;
+                                case 'instagram':
+                                    ?>
+                                        <img src="imgs/social-media/instagram.png" style="width: 35px;height: 35px;" alt="tiktok">
+                                    <?php
+                                    break;
+                                case 'facebook':
+                                    ?>
+                                        <img src="imgs/social-media/facebook.webp" style="width: 35px;height: 35px;" alt="tiktok">
+                                    <?php
+                                    break;
+                                case 'telegram':
+                                    ?>
+                                        <img src="imgs/social-media/telegram.png" style="width: 35px;height: 35px;" alt="tiktok">
+                                    <?php
+                                    break;
+                            }
+                        ?>
+                    </a>
+                </li>
+            <?php } ?>
+        </ul>
+    <?php endif; ?>
+
     <!-- End of items main container -->
     <?php if ($is_visa_available): ?>
         <ul id="faq" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-0" style="flex-wrap: wrap;">

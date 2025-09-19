@@ -34,15 +34,15 @@ div.offers > div {
     padding:0;
 }
 
-ul#faq {
+ul#faq, ul#social {
     position: relative;
     top: 30px;
-    margin-bottom: 10px !important;
+    margin-bottom: 5px !important;
     font-size: 14px !important;
 }
 
 div.main-page {
-    min-height: calc(100% - 31% - 120px - var(--home-icons-margins));
+    min-height: calc(100% - 31% - 120px - var(--home-icons-visa-margins) - var(--home-icons-social-margins));
     position: relative;
     top: 30px;
     display: flex;
