@@ -50,17 +50,11 @@
                                             case 'order':
                                                 include "../imgs/Delivery2.svg";
                                                 break;
-                                            case 'offers':
-                                                include '../imgs/Offer.svg';
-                                                break;
                                             case 'menu':
                                                 include '../imgs/menu.svg';
                                                 break;
                                             case 'social':
                                                 include "../imgs/socialmedia.svg";
-                                                break;
-                                            case 'comments':
-                                                include '../imgs/comments.svg';
                                                 break;
                                         }
                                         ?>
