@@ -54,8 +54,36 @@
                                         <span class="order"><?php echo $social['sort']; ?></span>
                                         <i class="fas fa-grip-horizontal"></i>
                                     </span>
-                                    <div class="icon" style="width:100%;height:fit-content;">
-                                        <?php include "../" . $social['img_url']; ?>
+                                    <div class="icon d-flex justify-content-center my-2" style="width:100%;height:fit-content;">
+                                        <?php
+                                            switch($social['type']){
+                                                case 'tiktok':
+                                                    ?>
+                                                        <img src="../imgs/social-media/tiktok.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                                    <?php
+                                                    break;
+                                                case 'twitter':
+                                                    ?>
+                                                        <img src="../imgs/social-media/x.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                                    <?php
+                                                    break;
+                                                case 'instagram':
+                                                    ?>
+                                                        <img src="../imgs/social-media/instagram.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                                    <?php
+                                                    break;
+                                                case 'facebook':
+                                                    ?>
+                                                        <img src="../imgs/social-media/facebook.webp" style="width: 80px;height: 80px;" alt="tiktok">
+                                                    <?php
+                                                    break;
+                                                case 'telegram':
+                                                    ?>
+                                                        <img src="../imgs/social-media/telegram.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                                    <?php
+                                                    break;
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                                 <p class="font-weight-bold my-0 fs-6 d-flex align-items-center justify-content-center flex-fill text-break text-center">
@@ -64,7 +92,7 @@
                                 <?php if (check_user_perm(['social-page-edit']) || check_user_perm(['social-page-remove'])) : ?>
                                     <div class="d-flex justify-content-between">
                                         <?php if (check_user_perm(['social-page-edit'])) : ?>
-                                            <button class="btn bg-gradient-success text-white my-1 py-1" onclick="show_edit_social_modal(<?php echo $social['id']; ?>, '<?php echo trim($social['img_url']); ?>', '<?php echo trim($social['link']); ?>')">تعديل</button>
+                                            <button class="btn bg-gradient-success text-white my-1 py-1" onclick="show_edit_social_modal(<?php echo $social['id']; ?>, '<?php echo trim($social['type']); ?>', '<?php echo trim($social['link']); ?>')">تعديل</button>
                                         <?php endif; ?>
                                         <?php if (check_user_perm(['social-page-remove'])) : ?>
                                             <button class="btn bg-gradient-danger text-white my-1 py-1" onclick="remove_social(<?php echo $social['id']; ?>,this)">حذف</button>
@@ -92,13 +120,12 @@
                 <div class="modal-body d-flex flex-wrap justify-content-start column-gap-1">
                     <div class="px-1 col-sm-6" style='flex-grow:1'>
                         <label class="text-bold">اختر وسيلة:</label>
-                        <select name="social-icon" class="form-select mb-2 border">
-                            <option value="imgs/tik-tok.svg">tik tok</option>
-                            <option value="imgs/twitter.svg">twitter</option>
-                            <option value="imgs/instagram.svg">instagram</option>
-                            <option value="imgs/facebook-group.svg">facebook group</option>
-                            <option value="imgs/facebook.svg">facebook</option>
-                            <option value="imgs/telegram.svg">telegram</option>
+                        <select name="type" class="form-select mb-2 border">
+                            <option value="tiktok">tik tok</option>
+                            <option value="twitter">twitter</option>
+                            <option value="instagram">instagram</option>
+                            <option value="facebook">facebook</option>
+                            <option value="telegram">telegram</option>
                         </select>
                         <input name="social-url" class="form-control border px-2" type="url" placeholder="الرابط الالكتروني">
                     </div>
@@ -124,13 +151,12 @@
                 <div class="modal-body d-flex flex-wrap justify-content-start column-gap-1">
                     <div class="px-1 col-sm-6" style='flex-grow:1'>
                         <label class="text-bold">اختر وسيلة:</label>
-                        <select name="social-icon" class="form-select mb-2 border">
-                            <option value="imgs/tik-tok.svg">tik tok</option>
-                            <option value="imgs/twitter.svg">twitter</option>
-                            <option value="imgs/instagram.svg">instagram</option>
-                            <option value="imgs/facebook-group.svg">facebook group</option>
-                            <option value="imgs/facebook.svg">facebook</option>
-                            <option value="imgs/telegram.svg">telegram</option>
+                        <select name="type" class="form-select mb-2 border">
+                            <option value="tiktok">tik tok</option>
+                            <option value="twitter">twitter</option>
+                            <option value="instagram">instagram</option>
+                            <option value="facebook">facebook</option>
+                            <option value="telegram">telegram</option>
                         </select>
                         <input name="social-url" class="form-control border px-2" type="url" placeholder="الرابط الالكتروني">
                     </div>
@@ -156,11 +182,11 @@
 
         function update_social() {
             var id = $("#edit_social_modal").attr("data-id")
-            var icon = $("#edit_social_modal").find("select[name='social-icon'] option:selected").val()
+            var type = $("#edit_social_modal").find("select[name='type'] option:selected").val()
             var link = $("#edit_social_modal").find("input[name='social-url']").val()
             $.post("ajax/update_social.php", {
                 id: id,
-                icon: icon,
+                type: type,
                 link: link
             }, function(res) {
                 if (res != "error") {
@@ -172,10 +198,10 @@
         }
 
         function add_new_social() {
-            var icon = $("#add_new_social_modal").find("select[name='social-icon'] option:selected").val()
+            var type = $("#add_new_social_modal").find("select[name='type'] option:selected").val()
             var link = $("#add_new_social_modal").find("input[name='social-url']").val()
             $.post("ajax/add_new_social.php", {
-                icon: icon,
+                type: type,
                 link: link
             }, function(res) {
                 if (res !== "error") {

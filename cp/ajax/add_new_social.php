@@ -2,13 +2,13 @@
 include '../../includes/conn.php';
 include '../functions/main.php';
 
-if (isset($_POST['icon']) && isset($_POST['link']) && is_logged() && check_user_perm(['social-page-add'])) {
-    $icon = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['icon'], FILTER_SANITIZE_URL));
+if (isset($_POST['type']) && isset($_POST['link']) && is_logged() && check_user_perm(['social-page-add'])) {
+    $type = mysqli_real_escape_string($GLOBALS['conn'], $_POST['type']);
     $link = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['link'], FILTER_SANITIZE_URL));
     $get_last_sort = mysqli_query($GLOBALS['conn'], "SELECT * FROM social_media ORDER BY sort DESC");
     $last_sort = mysqli_fetch_assoc($get_last_sort);
     $sort = $last_sort['sort'] + 1;
-    $insertion = mysqli_query($GLOBALS['conn'], "INSERT INTO social_media(sort,img_url,link) VALUES('$sort','$icon','$link')");
+    $insertion = mysqli_query($GLOBALS['conn'], "INSERT INTO social_media(sort,type,link) VALUES('$sort','$type','$link')");
 
     $id = mysqli_insert_id($GLOBALS['conn']);
 
@@ -30,8 +30,36 @@ if (isset($_POST['icon']) && isset($_POST['link']) && is_logged() && check_user_
                             <span class="order"><?php echo $sort; ?></span>
                             <i class="fas fa-grip-horizontal"></i>
                         </span>
-                        <div class="icon" style="width:100%;height:fit-content;">
-                            <?php include "../../" . $icon; ?>
+                        <div class="icon d-flex justify-content-center my-2" style="width:100%;height:fit-content;">
+                            <?php
+                                switch($type){
+                                    case 'tiktok':
+                                        ?>
+                                            <img src="../imgs/social-media/tiktok.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                        <?php
+                                        break;
+                                    case 'twitter':
+                                        ?>
+                                            <img src="../imgs/social-media/x.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                        <?php
+                                        break;
+                                    case 'instagram':
+                                        ?>
+                                            <img src="../imgs/social-media/instagram.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                        <?php
+                                        break;
+                                    case 'facebook':
+                                        ?>
+                                            <img src="../imgs/social-media/facebook.webp" style="width: 80px;height: 80px;" alt="tiktok">
+                                        <?php
+                                        break;
+                                    case 'telegram':
+                                        ?>
+                                            <img src="../imgs/social-media/telegram.png" style="width: 80px;height: 80px;" alt="tiktok">
+                                        <?php
+                                        break;
+                                }
+                            ?>
                         </div>
                     </div>
                     <p class="font-weight-bold my-0 fs-6 d-flex align-items-center justify-content-center flex-fill text-break text-center">
