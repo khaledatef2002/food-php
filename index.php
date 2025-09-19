@@ -46,9 +46,9 @@
     while ($icon = mysqli_fetch_assoc($getIcons)) :
         $icons[] = $icon['icon_name'];
     endwhile;
-    $class = "col-lg-4 col-md-6 col-sm-6 col-6";
+    $class = "col-lg-4 col-md-6 col-sm-6 col-5";
     if(count($icons) == 2){
-        $class = "col-lg-5 col-md-6 col-sm-6 col-6";
+        $class = "col-lg-5 col-md-6 col-sm-6 col-5";
     }
     ?>
 
