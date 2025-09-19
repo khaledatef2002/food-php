@@ -56,6 +56,12 @@
                                             case 'social':
                                                 include "../imgs/socialmedia.svg";
                                                 break;
+                                            case 'phone':
+                                                include "../imgs/newhot.svg";
+                                                break;
+                                            case 'whatsapp':
+                                                include "../imgs/whatsapp.svg";
+                                                break;
                                         }
                                         ?>
                                     </div>

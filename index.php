@@ -46,74 +46,35 @@
     while ($icon = mysqli_fetch_assoc($getIcons)) :
         $icons[] = $icon['icon_name'];
     endwhile;
+    $class = "col-lg-4 col-md-6 col-sm-6 col-6";
+    if(count($icons) == 2){
+        $class = "col-lg-5 col-md-6 col-sm-6 col-6";
+    }
     ?>
 
     <!-- Starting items main container -->
-    <div class="sections main-page col-lg-4 col-md-6 col-sm-4 col-xs-12 d-flex flex-wrap align-content-center mx-auto">
+    <div class="sections main-page col-lg-4 col-md-6 col-sm-4 col-xs-12 d-flex flex-wrap align-content-center mx-auto <?php echo count($icons) >= 3 ? 'gap-2' : ''; ?>">
         <?php
-        $num = 0;
-        $rows = ceil(mysqli_num_rows($getIcons) / 2);
-        $everyRow = mysqli_num_rows($getIcons) / $rows;
-        $counter = 0;
-        if (mysqli_num_rows($getIcons) % 2 == 0 && mysqli_num_rows($getIcons) != 6) :
+            $order = 0;
+            foreach ($icons as $icon) {
+                $order++;
 
-            for ($i = 0; $i < $rows; $i++) :
-        ?>
-                <div class="col-12" style="padding:0;display: flex;justify-content: center;">
-                    <?php
-                    for ($j = 1; $j <= $everyRow; $j++) :
-                        $counter += 1;
-                        switch ($icons[$counter - 1]):
-                            case 'order': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="order">
-                                        <div>
-                                            <?php include 'imgs/Delivery2.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php break;
+                if(($order == 1 || $order == 3) && count($icons) >= 3){
+                    echo "<div class='w-100 d-flex justify-content-evenly'>";
+                }
 
-                            case 'menu': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="menu">
-                                        <div>
-                                            <?php include 'imgs/menu.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php break;
-
-                            case 'social': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="social">
-                                        <div>
-                                            <?php include 'imgs/socialmedia.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php break;
-                        endswitch;
-                    endfor;
-                    ?>
-                </div>
-            <?php endfor; ?>
-            <?php
-        else :
-            foreach ($icons as $icon) :
                 switch ($icon):
                     case 'order': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                            <a href="order">
+                        <div class="item <?php echo $class; ?>">
+                            <a href="order-online">
                                 <div>
-                                    <?php include 'imgs/Delivery2.svg'; ?>
+                                    <?php include 'imgs/wb-esite.svg'; ?>
                                 </div>
                             </a>
                         </div>
                     <?php break;
-
                     case 'menu': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
+                        <div class="item <?php echo $class; ?>">
                             <a href="menu">
                                 <div>
                                     <?php include 'imgs/menu.svg'; ?>
@@ -121,9 +82,29 @@
                             </a>
                         </div>
                     <?php break;
+                    case 'phone': ?>
+                        <div class="item <?php echo $class; ?>">
+                            <a data-bs-toggle="modal" data-bs-target="#myModal">
+                                <div>
+                                    <?php include 'imgs/newhot.svg'; ?>
+                                </div>
+                            </a>
+                        </div>
+                        <?php
+                    break;
+                    case 'whatsapp': ?>
+                        <div class="item <?php echo $class; ?>">
+                            <a data-bs-toggle="modal" data-bs-target="#myModal">
+                                <div>
+                                    <?php include 'imgs/whatsapp.svg'; ?>
+                                </div>
+                            </a>
+                        </div>
+                        <?php
+                    break;
 
                     case 'social': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
+                        <div class="item <?php echo $class; ?>">
                             <a href="social">
                                 <div>
                                     <?php include 'imgs/socialmedia.svg'; ?>
@@ -131,28 +112,28 @@
                             </a>
                         </div>
                     <?php break;
-
-                    case 'comments': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                            <a href="comments">
-                                <div>
-                                    <?php include 'imgs/comments.svg'; ?>
-                                </div>
-                            </a>
-                        </div>
-        <?php break;
                 endswitch;
-            endforeach;
-        endif;
+
+                if(($order == 2 || $order == count($icons)) && count($icons) >= 3){
+                    echo "</div>";
+                }
+            }
         ?>
-        <ul style="list-style: none;display: flex;gap: 30px;position:absolute;bottom:5px;">
-            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/privacy" class="text-dark"><?php echo __('privacy_policy'); ?></a></li>
-            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/refund" class="text-dark"><?php echo __('refund_policy'); ?></a></li>
-            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/terms" class="text-dark">الشروط والاحكام</a></li>
-        </ul>
     </div>
     <!-- End of items main container -->
-
+    <?php if ($is_visa_available): ?>
+        <ul id="faq" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-0" style="flex-wrap: wrap;">
+            <li class="fw-bold" style="cursor:pointer;">
+                <a href="/privacy" class="text-dark text-decoration-none"><?php echo __('privacy_policy'); ?></a>
+            </li>
+            <li class="fw-bold" style="cursor:pointer;">
+                <a href="/refund" class="text-dark text-decoration-none"><?php echo __('refund_policy'); ?></a>
+            </li>
+            <li class="fw-bold" style="cursor:pointer;">
+                <a href="/terms" class="text-dark text-decoration-none">الشروط والاحكام</a>
+            </li>
+        </ul>
+    <?php endif; ?>
     <!-- Footer -->
     <div class="footer" style="    display: flex;
     justify-content: center;

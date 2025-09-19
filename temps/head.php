@@ -16,6 +16,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;900&family=Noto+Naskh+Arabic&display=swap" rel="stylesheet">
+
+<?php
+
+    $is_visa_available = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title = 'visa_av' AND value = '1'");
+    $is_visa_available = mysqli_num_rows($is_visa_available) > 0;
+
+?>
+
 <style>
     body {
         font-family: 'Cairo', sans-serif;
@@ -46,5 +54,7 @@
         --text: <?php echo $colors_settings['text']; ?>;
         --modal-header-back: <?php echo $colors_settings['modal_header_back']; ?>;
         --modal-header-color: <?php echo $colors_settings['modal_header_color']; ?>;
+
+        --home-icons-margins: <?php echo $is_visa_available ? '31px' : '0px'; ?>;
     }
 </style>

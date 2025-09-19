@@ -128,10 +128,16 @@
           <?php } ?>
         </div>
       <?php } ?>
-      <ul style="list-style: none;display: flex;gap: 30px;justify-content:center;">
-      <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/privacy" class="text-dark"><?php echo __('privacy_policy'); ?></a></li>
-            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/refund" class="text-dark"><?php echo __('refund_policy'); ?></a></li>
-            <li style="display: flex;justify-content: center;align-items: center;cursor:pointer;"><a href="/terms" class="text-dark">الشروط والاحكام</a></li>
+      <ul id="faq" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-1 top-0" style="flex-wrap: wrap;">
+        <li class="fw-bold" style="cursor:pointer;">
+            <a href="/privacy" class="text-dark text-decoration-none"><?php echo __('privacy_policy'); ?></a>
+        </li>
+        <li class="fw-bold" style="cursor:pointer;">
+            <a href="/refund" class="text-dark text-decoration-none"><?php echo __('refund_policy'); ?></a>
+        </li>
+        <li class="fw-bold" style="cursor:pointer;">
+            <a href="/terms" class="text-dark text-decoration-none">الشروط والاحكام</a>
+        </li>
       </ul>
     </div>
     <div class="order-footer">
