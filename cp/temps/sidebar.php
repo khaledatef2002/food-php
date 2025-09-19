@@ -130,37 +130,6 @@
           <?php endif; ?>
         </div>
       <?php endif; ?>
-      <?php if (check_user_perm(['offers-page-cover-view', 'offers-page-view'])) : ?>
-        <hr class="bg-white my-1">
-        <li class="nav-item" data-bs-toggle="collapse" data-bs-target="#offers" aria-expanded="false" role="button">
-          <a class="nav-link py-2 justify-content-between mx-0 px-1">
-            <span class="nav-link-text me-1 font-weight-bolder"><i class="fas fa-percent mx-2 mr-0"></i> العروض</span>
-            <i class="fas fa-angle-double-left fs-6"></i>
-          </a>
-        </li>
-        <div class="collapse <?php echo ($currentPage == 'offers-cover.php' || $currentPage == 'offers.php') ? 'show' : ''; ?>" id="offers">
-          <?php if (check_user_perm(['offers-page-cover-view'])) : ?>
-            <li class="nav-item">
-              <a class="nav-link py-2 <?php echo ($currentPage == 'offers-cover.php') ? 'active bg-gradient-primary' : ''; ?>" href="offers-cover.php">
-                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-images"></i>
-                </div>
-                <span class="nav-link-text me-1">غلاف العروض</span>
-              </a>
-            </li>
-          <?php endif; ?>
-          <?php if (check_user_perm(['offers-page-view'])) : ?>
-            <li class="nav-item">
-              <a class="nav-link py-2 <?php echo ($currentPage == 'offers.php') ? 'active bg-gradient-primary' : ''; ?>" href="offers.php">
-                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-percentage"></i>
-                </div>
-                <span class="nav-link-text me-1">العروض</span>
-              </a>
-            </li>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
       <?php if (check_user_perm(['manual-menu-view'])) : ?>
         <hr class="bg-white my-1">
         <li class="nav-item">

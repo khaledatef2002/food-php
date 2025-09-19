@@ -255,48 +255,6 @@
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <th class="fw-bold text-dark">غلاف صفحة العروض</th>
-                                                <th class="d-flex gap-5 text-wrap justify-content-center">
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-cover-view') ? 'CHECKED' : ''; ?> name="offers-page-cover-view" class="form-check-input" type="checkbox" role="switch" id="offers-page-cover-view">
-                                                        <label class="form-check-label" for="offers-page-cover-view" value="1">عرض</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-cover-add') ? 'CHECKED' : ''; ?> name="offers-page-cover-add" class="form-check-input" type="checkbox" role="switch" id="offers-page-cover-add">
-                                                        <label class="form-check-label" for="offers-page-cover-add" value="1">اضافة</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-cover-edit') ? 'CHECKED' : ''; ?> name="offers-page-cover-edit" class="form-check-input" type="checkbox" role="switch" id="offers-page-cover-edit">
-                                                        <label class="form-check-label" for="offers-page-cover-edit" value="1">تعديل</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-cover-remove') ? 'CHECKED' : ''; ?> name="offers-page-cover-remove" class="form-check-input" type="checkbox" role="switch" id="offers-page-cover-remove">
-                                                        <label class="form-check-label" for="offers-page-cover-remove" value="1">حذف</label>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th class="fw-bold text-dark">صفحة العروض</th>
-                                                <th class="d-flex gap-5 text-wrap justify-content-center">
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-view') ? 'CHECKED' : ''; ?> name="offers-page-view" class="form-check-input" type="checkbox" role="switch" id="offers-page-view">
-                                                        <label class="form-check-label" for="offers-page-view" value="1">عرض</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-add') ? 'CHECKED' : ''; ?> name="offers-page-add" class="form-check-input" type="checkbox" role="switch" id="offers-page-add">
-                                                        <label class="form-check-label" for="offers-page-add" value="1">اضافة</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-edit') ? 'CHECKED' : ''; ?> name="offers-page-edit" class="form-check-input" type="checkbox" role="switch" id="offers-page-edit">
-                                                        <label class="form-check-label" for="offers-page-edit" value="1">تعديل</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input <?php echo get_role_permission($role['id'], 'offers-page-remove') ? 'CHECKED' : ''; ?> name="offers-page-remove" class="form-check-input" type="checkbox" role="switch" id="offers-page-remove">
-                                                        <label class="form-check-label" for="offers-page-remove" value="1">حذف</label>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            <tr>
                                                 <th class="fw-bold text-dark">المنيو</th>
                                                 <th class="d-flex gap-5 text-wrap justify-content-center">
                                                     <div class="form-check form-switch">

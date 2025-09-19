@@ -74,16 +74,6 @@
                                 </div>
                             <?php break;
 
-                            case 'offers': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="offers">
-                                        <div>
-                                            <?php include 'imgs/Offer.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php break;
-
                             case 'menu': ?>
                                 <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
                                     <a href="menu">
@@ -117,16 +107,6 @@
                             <a href="order">
                                 <div>
                                     <?php include 'imgs/Delivery2.svg'; ?>
-                                </div>
-                            </a>
-                        </div>
-                    <?php break;
-
-                    case 'offers': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                            <a href="offers">
-                                <div>
-                                    <?php include 'imgs/Offer.svg'; ?>
                                 </div>
                             </a>
                         </div>
