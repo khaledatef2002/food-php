@@ -59,9 +59,6 @@
                                             case 'social':
                                                 include "../imgs/socialmedia.svg";
                                                 break;
-                                            case 'safwa':
-                                                include '../imgs/safwa.svg';
-                                                break;
                                             case 'comments':
                                                 include '../imgs/comments.svg';
                                                 break;
