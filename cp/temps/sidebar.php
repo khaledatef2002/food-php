@@ -161,37 +161,6 @@
           <?php endif; ?>
         </div>
       <?php endif; ?>
-      <?php if (check_user_perm(['safwa-card-cover-view', 'safwa-card-view'])) : ?>
-        <hr class="bg-white my-1">
-        <li class="nav-item" data-bs-toggle="collapse" data-bs-target="#safwa" aria-expanded="false" role="button">
-          <a class="nav-link py-2 justify-content-between mx-0 px-1">
-            <span class="nav-link-text me-1 font-weight-bolder"><i class="fas fa-star mx-2 mr-0"></i> الصفوة</span>
-            <i class="fas fa-angle-double-left fs-6"></i>
-          </a>
-        </li>
-        <div class="collapse <?php echo ($currentPage == 'safwa-card.php' || $currentPage == 'safwa-card-cover.php' || $currentPage == 'safwa-cover.php' || $currentPage == 'safwa.php') ? 'show' : ''; ?>" id="safwa">
-          <?php if (check_user_perm(['safwa-card-cover-view'])) : ?>
-            <li class="nav-item">
-              <a class="nav-link py-2 <?php echo ($currentPage == 'safwa-card-cover.php') ? 'active bg-gradient-primary' : ''; ?>" href="safwa-card-cover.php">
-                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                  <i class="far fa-file-image"></i>
-                </div>
-                <span class="nav-link-text me-1">غلاف كارت الصفوة</span>
-              </a>
-            </li>
-          <?php endif; ?>
-          <?php if (check_user_perm(['safwa-card-view'])) : ?>
-            <li class="nav-item">
-              <a class="nav-link py-2 <?php echo ($currentPage == 'safwa-card.php') ? 'active bg-gradient-primary' : ''; ?>" href="safwa-card.php">
-                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
-                  <i class="far fa-id-card"></i>
-                </div>
-                <span class="nav-link-text me-1">كارت الصفوة</span>
-              </a>
-            </li>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
       <?php if (check_user_perm(['manual-menu-view'])) : ?>
         <hr class="bg-white my-1">
         <li class="nav-item">

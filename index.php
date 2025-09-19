@@ -103,26 +103,6 @@
                                     </a>
                                 </div>
                             <?php break;
-
-                            case 'safwa': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="safwa">
-                                        <div>
-                                            <?php include 'imgs/safwa.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php break;
-
-                            case 'comments': ?>
-                                <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                                    <a href="comments">
-                                        <div>
-                                            <?php include 'imgs/comments.svg'; ?>
-                                        </div>
-                                    </a>
-                                </div>
-                    <?php break;
                         endswitch;
                     endfor;
                     ?>
@@ -167,16 +147,6 @@
                             <a href="social">
                                 <div>
                                     <?php include 'imgs/socialmedia.svg'; ?>
-                                </div>
-                            </a>
-                        </div>
-                    <?php break;
-
-                    case 'safwa': ?>
-                        <div class="item col-lg-4 col-md-4 col-sm-4 col-4">
-                            <a href="safwa">
-                                <div>
-                                    <?php include 'imgs/safwa.svg'; ?>
                                 </div>
                             </a>
                         </div>

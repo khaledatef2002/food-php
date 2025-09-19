@@ -267,48 +267,6 @@
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <th class="fw-bold text-dark">غلاف صفحة كارت الصفوة</th>
-                                                <th class="d-flex gap-5 text-wrap justify-content-center">
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-cover-view" class="form-check-input" type="checkbox" role="switch" id="safwa-card-cover-view">
-                                                        <label class="form-check-label" for="safwa-card-cover-view" value="1">عرض</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-cover-add" class="form-check-input" type="checkbox" role="switch" id="safwa-card-cover-add">
-                                                        <label class="form-check-label" for="safwa-card-cover-add" value="1">اضافة</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-cover-edit" class="form-check-input" type="checkbox" role="switch" id="safwa-card-cover-edit">
-                                                        <label class="form-check-label" for="safwa-card-cover-edit" value="1">تعديل</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-cover-remove" class="form-check-input" type="checkbox" role="switch" id="safwa-card-cover-remove">
-                                                        <label class="form-check-label" for="safwa-card-cover-remove" value="1">حذف</label>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th class="fw-bold text-dark">صفحة كارت الصفوة</th>
-                                                <th class="d-flex gap-5 text-wrap justify-content-center">
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-view" class="form-check-input" type="checkbox" role="switch" id="safwa-card-view">
-                                                        <label class="form-check-label" for="safwa-card-view" value="1">عرض</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-add" class="form-check-input" type="checkbox" role="switch" id="safwa-card-add">
-                                                        <label class="form-check-label" for="safwa-card-add" value="1">اضافة</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-edit" class="form-check-input" type="checkbox" role="switch" id="safwa-card-edit">
-                                                        <label class="form-check-label" for="safwa-card-edit" value="1">تعديل</label>
-                                                    </div>
-                                                    <div class="form-check form-switch">
-                                                        <input name="safwa-card-remove" class="form-check-input" type="checkbox" role="switch" id="safwa-card-remove">
-                                                        <label class="form-check-label" for="safwa-card-remove" value="1">حذف</label>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            <tr>
                                                 <th class="fw-bold text-dark">المنيو</th>
                                                 <th class="d-flex gap-5 text-wrap justify-content-center">
                                                     <div class="form-check form-switch">
