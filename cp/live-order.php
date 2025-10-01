@@ -116,7 +116,7 @@
         $last_notify = mysqli_fetch_assoc($last_notify);
         ?>
 
-        var audio = new Audio('notification_sound.wav');
+        var audio = new Audio('notification_sound.mp3');
         audio.loop = true;
 
         let last_notify = "<?php echo $last_notify['id'] ?? '0'; ?>";
