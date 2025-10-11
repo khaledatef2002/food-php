@@ -92,7 +92,7 @@
   $cart = $_SESSION['cart'] ?? array();
   ?>
   <div class="sections order-online-page col-lg-6 col-12 mx-auto position-relative">
-    <div class="categories">
+    <div class="categories pb-1">
       <ul class="gap-2">
         <?php
         $get_cat = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT food_categories.id,food_categories.category_name FROM food_categories INNER JOIN food_items WHERE food_categories.id=food_items.cat_id AND food_categories.active=1 AND (food_items.active=1 OR (food_items.active = 2 AND food_items.from <= '" . time() . "' AND food_items.to >= '" . time() . "')) ORDER BY food_categories.sort ASC");
