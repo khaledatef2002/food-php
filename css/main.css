@@ -42,7 +42,7 @@ ul#faq, ul#social {
 }
 
 div.main-page {
-    min-height: calc(100% - 31% - 120px - var(--home-icons-visa-margins) - var(--home-icons-social-margins));
+    min-height: calc(100% - 31% - 125px - var(--home-icons-visa-margins) - var(--home-icons-social-margins));
     position: relative;
     top: 30px;
     display: flex;
