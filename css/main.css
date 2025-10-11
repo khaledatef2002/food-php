@@ -221,6 +221,11 @@ div.order-online-page ul li p
     margin: 0;
 }
 
+div.order-online-page .category-items-list .category-title {
+    overflow: hidden;
+    margin: 0 10px;
+}
+
 div.order-online-page .category-items-list .category-title h3::before
 {
     content: "";
