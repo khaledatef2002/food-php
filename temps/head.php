@@ -58,7 +58,7 @@
         --modal-header-back: <?php echo $colors_settings['modal_header_back']; ?>;
         --modal-header-color: <?php echo $colors_settings['modal_header_color']; ?>;
 
-        --home-icons-visa-margins: <?php echo $is_visa_available ? '16px' : '0px'; ?>;
+        --home-icons-visa-margins: <?php echo $is_visa_available ? '19px' : '0px'; ?>;
         --home-icons-social-margins: <?php echo $is_social_media ? '40px' : '0px'; ?>;
 
     }
