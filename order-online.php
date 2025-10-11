@@ -108,7 +108,7 @@
     <!-- <div style="position: sticky;display: block;top: 45px;margin-bottom: -20px;z-index:5;">
       <button data-toggle="modal" data-target="#search_window" style="display: flex;justify-content: center;align-items: center;gap: 5px;float: left;font-weight: bold;border: 0;background: var(--cat-header-active-back);color: var(--cat-header-active-color);padding: 4px 15px;border-radius: 5px;">بـحـث <i class="glyphicon glyphicon-search"></i></button>
     </div> -->
-    <div class="items d-flex flex-column gap-4 mt-3">
+    <div class="items d-flex flex-column gap-4 mt-3 px-1">
       <?php
       $get_cat = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT food_categories.id,food_categories.category_name FROM food_categories INNER JOIN food_items WHERE food_categories.id=food_items.cat_id AND food_categories.active=1 AND (food_items.active=1 OR (food_items.active = 2 AND food_items.from <= '" . time() . "' AND food_items.to >= '" . time() . "')) ORDER by food_categories.sort ASC");
       while ($cat = mysqli_fetch_assoc($get_cat)) { ?>
@@ -137,17 +137,6 @@
         </div>
       </div>
       <?php } ?>
-      <ul id="faq" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-1 top-0" style="flex-wrap: wrap;">
-        <li class="fw-bold" style="cursor:pointer;">
-            <a href="/privacy" class="text-dark text-decoration-none"><?php echo __('privacy_policy'); ?></a>
-        </li>
-        <li class="fw-bold" style="cursor:pointer;">
-            <a href="/refund" class="text-dark text-decoration-none"><?php echo __('refund_policy'); ?></a>
-        </li>
-        <li class="fw-bold" style="cursor:pointer;">
-            <a href="/terms" class="text-dark text-decoration-none">الشروط والاحكام</a>
-        </li>
-      </ul>
     </div>
     <div class="order-footer">
       <p style="text-align:center;margin:0;">
