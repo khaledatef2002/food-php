@@ -1,2 +1,2 @@
-ALTER TABLE `social_media` ADD `type` VARCHAR(255) NOT NULL AFTER `sort`;
-ALTER TABLE `social_media` DROP `img_url`;
+ALTER TABLE `food_orders` ADD `total_order` FLOAT NOT NULL AFTER `tax`;
+ALTER TABLE `visa_orders_req` ADD `total_order` FLOAT NOT NULL AFTER `tax`;

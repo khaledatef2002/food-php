@@ -132,7 +132,9 @@ function save_pending_order(array $data, float $visa_tax)
 
     $order_id = generate_uuid();
 
-    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(id, client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax) VALUES ('" . $order_id . "', '" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax')");
+    $total_order = calc_total_price($cart) + $del_price + $tax - $discount_data['discount_total'] - $discount_data['discount_delv'];
+
+    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(id, client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax,total_order) VALUES ('" . $order_id . "', '" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax', '" . $total_order . "')");
 
     foreach ($cart as $key => $item) {
         $item_info = get_item_info($item['item_id']);

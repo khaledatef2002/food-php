@@ -52,15 +52,11 @@
                     $thisMonthStart = strtotime('first day of this month');
                     $thisDayStart = strtotime('midnight today');
 
-                    $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE marked=1 AND ordered_date >= '$thisMonthStart'");
-                    $getSuccessOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE marked=1 AND ordered_date >= '$thisDayStart'");
+                    $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) FROM food_orders WHERE marked=1 AND ordered_date >= '$thisMonthStart'");
+                    $getSuccessOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) FROM food_orders WHERE marked=1 AND ordered_date >= '$thisDayStart'");
 
-                    while ($fetch = mysqli_fetch_assoc($getSuccessOrders)) {
-                      $earnAll += (get_total_order_price($fetch['id']) + $fetch['tax'] + $fetch['address_price'] - $fetch['delivery_discount'] - $fetch['total_discount']);
-                    }
-                    while ($fetch = mysqli_fetch_assoc($getSuccessOrdersToday)) {
-                      $earnToday += (get_total_order_price($fetch['id']) + $fetch['tax'] + $fetch['address_price'] - $fetch['delivery_discount'] - $fetch['total_discount']);
-                    }
+                    $earnAll = mysqli_fetch_assoc($getSuccessOrders)['SUM(total_order)'];
+                    $earnToday = mysqli_fetch_assoc($getSuccessOrdersToday)['SUM(total_order)'];
 
                     echo number_format($earnAll) . "$";
                     ?>

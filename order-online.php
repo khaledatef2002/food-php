@@ -1,4 +1,7 @@
-<?php include "temps/settings.php"; ?>
+<?php 
+  session_start();
+  include "temps/settings.php"; 
+?>
 <!DOCTYPE html>
 
 <html lang="<?php echo $site_setting['lang']; ?>" dir="<?php echo $site_setting['dir']; ?>">
@@ -54,7 +57,7 @@
       position: absolute;
       top: 3px;
       left: 2px;
-      font-size: 16px;
+      font-size: 15px;
     }
 
     input[type=checkbox] {
@@ -86,18 +89,17 @@
   include "temps/header.php";
   include "includes/functions.php";
   add_visit('order-online');
-  session_start();
   $cart = $_SESSION['cart'] ?? array();
   ?>
   <div class="sections order-online-page col-lg-6 col-12 mx-auto position-relative">
     <div class="categories">
-      <ul>
+      <ul class="gap-2">
         <?php
         $get_cat = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT food_categories.id,food_categories.category_name FROM food_categories INNER JOIN food_items WHERE food_categories.id=food_items.cat_id AND food_categories.active=1 AND (food_items.active=1 OR (food_items.active = 2 AND food_items.from <= '" . time() . "' AND food_items.to >= '" . time() . "')) ORDER BY food_categories.sort ASC");
         $i = 0;
         while ($cat = mysqli_fetch_assoc($get_cat)) { ?>
-          <li <?php echo ($i == 0) ? 'class="active"' : ''; ?> data-id="<?php echo $cat['id']; ?>">
-            <p><?php echo $cat['category_name']; ?></p>
+          <li class="rounded <?php echo ($i == 0) ? 'active' : ''; ?> px-3 py-2" data-id="<?php echo $cat['id']; ?>">
+            <p class="mb-0"><?php echo $cat['category_name']; ?></p>
           </li>
         <?php $i = 1;
         } ?>
@@ -106,27 +108,34 @@
     <!-- <div style="position: sticky;display: block;top: 45px;margin-bottom: -20px;z-index:5;">
       <button data-toggle="modal" data-target="#search_window" style="display: flex;justify-content: center;align-items: center;gap: 5px;float: left;font-weight: bold;border: 0;background: var(--cat-header-active-back);color: var(--cat-header-active-color);padding: 4px 15px;border-radius: 5px;">بـحـث <i class="glyphicon glyphicon-search"></i></button>
     </div> -->
-    <div class="items">
+    <div class="items d-flex flex-column gap-4 mt-3">
       <?php
       $get_cat = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT food_categories.id,food_categories.category_name FROM food_categories INNER JOIN food_items WHERE food_categories.id=food_items.cat_id AND food_categories.active=1 AND (food_items.active=1 OR (food_items.active = 2 AND food_items.from <= '" . time() . "' AND food_items.to >= '" . time() . "')) ORDER by food_categories.sort ASC");
       while ($cat = mysqli_fetch_assoc($get_cat)) { ?>
-        <div class="item-list" data-id="<?php echo $cat['id']; ?>">
-          <h2 class="my-1 fw-bold fs-3 ps-2"><?php echo $cat['category_name']; ?></h2>
+      <div class="category-items-list" data-id="<?php echo $cat['id']; ?>">
+        <div class="category-title d-flex justify-content-center">
+          <h3 class="fw-bold mb-2 pb-1 position-relative"><?php echo $cat['category_name']; ?></h3>
+        </div>
+        <div class="item-list d-flex flex-column gap-2">
           <?php
           $get_items = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_items WHERE cat_id='" . $cat['id'] . "' AND (active=1 OR (active=2 AND  `from` <= '" . time() . "' AND  `to` >= '" . time() . "')) ORDER BY SORT ASC");
           while ($item = mysqli_fetch_assoc($get_items)) { ?>
-            <div class="item food-item" data-id="<?php echo $item['id']; ?>">
-              <div class="right">
+            <div class="item food-item bg-white rounded-4 p-2" data-id="<?php echo $item['id']; ?>">
+              <div class="right rounded-4">
                 <img data-src="<?php echo $item['img']; ?>" class="lazy">
               </div>
-              <div class="content ps-2">
-                <h3 class="fs-4"><?php echo $item['title']; ?></h3>
+              <div class="content ps-3 px-1 py-1">
+                <h3 class="fs-4 fw-bold"><?php echo $item['title']; ?></h3>
                 <p class="fs-6"><?php echo $item['description']; ?></p>
-                <span><?php echo ($item['price'] > 0) ? $item['price'] . " " . $site_setting['currency'] : '[' . __('according_to_choice') . ']'; ?> <?php echo ($item['before_discount'] > 0) ? "بدلاً من " . "<span class='text-danger' style='text-decoration:line-through'>" . $item['before_discount'] . " " . $site_setting['currency'] . "</span>"  : ''; ?></span>
+                <div class="item-footer d-flex align-items-center justify-content-between">
+                  <span class="fw-bold"><?php echo ($item['price'] > 0) ? $item['price'] . " " . $site_setting['currency'] : '[' . __('according_to_choice') . ']'; ?> <?php echo ($item['before_discount'] > 0) ? "بدلاً من " . "<span class='text-danger' style='text-decoration:line-through'>" . $item['before_discount'] . " " . $site_setting['currency'] . "</span>"  : ''; ?></span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30px" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 72C0 58.7 10.7 48 24 48L69.3 48C96.4 48 119.6 67.4 124.4 94L124.8 96L537.5 96C557.5 96 572.6 114.2 568.9 133.9L537.8 299.8C532.1 330.1 505.7 352 474.9 352L171.3 352L176.4 380.3C178.5 391.7 188.4 400 200 400L456 400C469.3 400 480 410.7 480 424C480 437.3 469.3 448 456 448L200.1 448C165.3 448 135.5 423.1 129.3 388.9L77.2 102.6C76.5 98.8 73.2 96 69.3 96L24 96C10.7 96 0 85.3 0 72zM160 528C160 501.5 181.5 480 208 480C234.5 480 256 501.5 256 528C256 554.5 234.5 576 208 576C181.5 576 160 554.5 160 528zM384 528C384 501.5 405.5 480 432 480C458.5 480 480 501.5 480 528C480 554.5 458.5 576 432 576C405.5 576 384 554.5 384 528zM336 142.4C322.7 142.4 312 153.1 312 166.4L312 200L278.4 200C265.1 200 254.4 210.7 254.4 224C254.4 237.3 265.1 248 278.4 248L312 248L312 281.6C312 294.9 322.7 305.6 336 305.6C349.3 305.6 360 294.9 360 281.6L360 248L393.6 248C406.9 248 417.6 237.3 417.6 224C417.6 210.7 406.9 200 393.6 200L360 200L360 166.4C360 153.1 349.3 142.4 336 142.4z"/></svg>
+                </div>
               </div>
             </div>
           <?php } ?>
         </div>
+      </div>
       <?php } ?>
       <ul id="faq" class="list-unstyled d-flex justify-content-center align-items-center gap-4 mb-1 top-0" style="flex-wrap: wrap;">
         <li class="fw-bold" style="cursor:pointer;">
@@ -200,7 +209,7 @@
               <span>10</span>
               <span><?php echo $site_setting['currency']; ?> </span>
             </div>
-            <div class="item_count_custom" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;padding: 3px;height:27px;direction:ltr;">
+            <div class="item_count_custom d-flex align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;padding: 3px;height:27px;direction:ltr;">
               <span class="add" style="font-size: 20px;margin: 0 10px;cursor:pointer;color:var(--button-color);font-weight:bold;">+</span>
               <span class="count" style="font-size:20px;margin:0 5px;">1</span>
               <span class="minus" style="font-size: 20px;margin: 0 10px;cursor:pointer;color:var(--button-color);font-weight:bold;">-</span>
@@ -218,8 +227,8 @@
           </div>
         </div>
         <div class="modal-footer" style="text-align: center;display: flex;flex-direction: row;padding: 7px 5px;justify-content: center;column-gap: 5px;">
-          <button data-bs-dismiss="modal" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 20px;border: 0;flex: 1;"><?php echo __('close'); ?></button>
-          <button class="spinner-button-loading" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 20px;border: 0;flex: 1;">
+          <button data-bs-dismiss="modal" class=" d-flex justify-content-center align-items-center" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('close'); ?></button>
+          <button class="spinner-button-loading d-flex justify-content-center align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 16px;border: 0;flex: 1;">
             <span class="content-button-loading"><?php echo __('add'); ?></span>
             <div class="lds-dual-ring"></div>
           </button>
@@ -252,8 +261,8 @@
           }
           ?>
           <div style="text-align: center;display: flex;justify-content: center;column-gap: 5px;width: 100%;">
-            <button data-bs-dismiss="modal" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;margin: auto;font-weight: bold;font-size: 20px;border: 0;flex: 1;"><?php echo __('return_to_shop'); ?></button>
-            <button style="background: var(--button-back);color: var(--button-color);<?php echo $type; ?>border-radius: 5px;height: 35px;padding: 5px 5px;font-weight: bold;font-size: 20px;border: 0;flex: 1;"><?php echo __('continue'); ?></button>
+            <button class="d-flex align-items-center justify-content-center"data-bs-dismiss="modal" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('return_to_shop'); ?></button>
+            <button class="d-flex align-items-center justify-content-center"style="background: var(--button-back);color: var(--button-color);<?php echo $type; ?>border-radius: 5px;height: 35px;padding: 5px 5px;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('continue'); ?></button>
           </div>
         </div>
       </div>
@@ -343,8 +352,8 @@
 
         </div>
         <div class="modal-footer" style="text-align: center;display: flex;flex-direction: row;padding: 7px 5px;justify-content: center;column-gap: 5px;">
-          <button data-bs-dismiss="modal" onclick="new bootstrap.Modal(document.getElementById('card_info')).show();" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 20px;border: 0;flex: 1;"><?php echo __('return_to_cart'); ?></button>
-          <button class="spinner-button-loading" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 20px;border: 0;flex: 1;">
+          <button data-bs-dismiss="modal" class="d-flex justify-content-center align-items-center" onclick="new bootstrap.Modal(document.getElementById('card_info')).show();" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('return_to_cart'); ?></button>
+          <button class="spinner-button-loading d-flex justify-content-center align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 16px;border: 0;flex: 1;">
             <span class="content-button-loading"><?php echo __('confirm_info'); ?></span>
             <div class="lds-dual-ring"></div>
           </button>
@@ -436,8 +445,8 @@
           <br>
         </div>
         <div class="modal-footer" style="text-align: center;display: flex;flex-direction: row;padding: 7px 5px;justify-content: center;column-gap: 5px;">
-          <button data-bs-dismiss="modal" onclick="new bootstrap.Modal(document.getElementById('user_info')).show();" style="background: #a7a7a7;color: white;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 20px;border: 0;flex: 1;"><?php echo __('return_to_edit'); ?></button>
-          <button class="spinner-button-loading" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 20px;border: 0;flex: 1;">
+          <button data-bs-dismiss="modal" class="d-flex justify-content-center align-items-center" onclick="new bootstrap.Modal(document.getElementById('user_info')).show();" style="background: #a7a7a7;color: white;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('return_to_edit'); ?></button>
+          <button class="spinner-button-loading d-flex justify-content-center align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 16px;border: 0;flex: 1;">
             <span class="content-button-loading"><?php echo __('send_order'); ?></span>
             <div class="lds-dual-ring"></div>
           </button>

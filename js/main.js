@@ -103,7 +103,7 @@ $(".order-online-page .categories ul li").click(function(){
   var id = $(this).attr("data-id")
   var that = this
   $('.order-online-page').animate({
-    scrollTop: $(".item-list[data-id='" + id + "']").offset().top - $(".order-online-page").offset().top + $(".order-online-page").scrollTop() - 30
+    scrollTop: $(".category-items-list[data-id='" + id + "']").offset().top - $(".order-online-page").offset().top + $(".order-online-page").scrollTop() - 55
   }, 500, function() {
     $(".order-online-page .categories ul li.active").removeClass("active")
     $(that).addClass("active")
@@ -112,10 +112,10 @@ $(".order-online-page .categories ul li").click(function(){
 
 $(".order-online-page").scroll(function (event) {
   var scroll = $(".order-online-page").scrollTop()
-  for(var i = 1; i <= $(".item-list").length; i++)
+  for(var i = 1; i <= $(".category-items-list").length; i++)
   {
-    var scrolled = $(".item-list:nth-of-type(" + i + ")").offset().top - $(".order-online-page").offset().top + $(".order-online-page").scrollTop() - 100
-    if(scroll >= scrolled && scroll <= scrolled + $(".item-list:nth-of-type(" + i + ")").height())
+    var scrolled = $(".category-items-list:nth-of-type(" + i + ")").offset().top - $(".order-online-page").offset().top + $(".order-online-page").scrollTop() - 55
+    if(scroll >= scrolled && scroll <= scrolled + $(".category-items-list:nth-of-type(" + i + ")").height())
     {
       $(".order-online-page .categories ul li.active").removeClass("active")
       $(".order-online-page .categories ul li:nth-of-type(" + i + ")").addClass("active")
@@ -188,18 +188,18 @@ function open_item(id, me)
       if(item.type == 1)
       {
         flag = `
-        <span class="fs-6 fw-bold" style="background: #ff8e07;
+        <span class="fw-normal" style="background: #ff8e07;
         border-radius: 6px;
     color: white;
-    padding: 6px 7px;">${lang.optional}</span>`
+    padding: 6px 7px;font-size: 14px;">${lang.optional}</span>`
       }
       else if(item.type == 0)
       {
         flag = `
-        <span class="fs-6 fw-bold" style="background: #e51212;
+        <span class="fw-normal" style="background: #e51212;
         border-radius: 6px;
     color: white;
-    padding: 6px 7px;">${lang.required}</span>`
+    padding: 6px 7px;font-size: 14px;">${lang.required}</span>`
       }
       var item_push = `
         <div class="item-option" style="margin-bottom:10px !important;width:90%;margin:auto;">

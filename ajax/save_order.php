@@ -80,7 +80,9 @@
         $discount_data = get_discount_values($_POST['data']['discount']);
     }
 
-    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax) VALUES ('".$data['client_name']."','".$data['client_phone']."','".$branch_id."','".$branch."','".$data['client_location']."','".$client_area_name."','".$data['client_address']."','".$del_price."','".$data['client_notice']."','".$date."','".$discount_data['discount_id']."','".$discount_data['discount_code']."','".$discount_data['discount_name']."','".$discount_data['discount_delv']."','".$discount_data['discount_total']."', '$tax')");
+    $total_order = calc_total_price($cart) + $del_price + $tax - $discount_data['discount_total'] - $discount_data['discount_delv'];
+
+    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax, total_order) VALUES ('".$data['client_name']."','".$data['client_phone']."','".$branch_id."','".$branch."','".$data['client_location']."','".$client_area_name."','".$data['client_address']."','".$del_price."','".$data['client_notice']."','".$date."','".$discount_data['discount_id']."','".$discount_data['discount_code']."','".$discount_data['discount_name']."','".$discount_data['discount_delv']."','".$discount_data['discount_total']."', '$tax', '".$total_order."')");
 
     $order_id = mysqli_insert_id($GLOBALS['conn']);
 

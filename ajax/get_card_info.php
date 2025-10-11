@@ -56,7 +56,7 @@ foreach ($cart as $key => $item) { ?>
                         <span><?php echo calc_item_price($item); ?></span>
                         <span><?php echo $site_setting['currency']; ?> </span>
                     </div>
-                    <div class="item_count_custom" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;padding: 3px;height:27px;direction:ltr;">
+                    <div class="item_count_custom d-flex align-items-center justify-content-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;padding: 3px;height:27px;direction:ltr;">
                         <span class="add" style="font-size: 20px;margin: 0 10px;cursor:pointer;color:var(--button-color);font-weight:bold;">+</span>
                         <span class="count" style="font-size:20px;margin:0 5px;"><?php echo $item['count']; ?></span>
                         <span class="minus" style="font-size: 20px;margin: 0 10px;cursor:pointer;color:var(--button-color);font-weight:bold;">-</span>

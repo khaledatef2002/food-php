@@ -15,7 +15,7 @@
 <?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;900&family=Noto+Naskh+Arabic&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Naskh+Arabic&display=swap" rel="stylesheet">
 
 <?php
 
@@ -30,7 +30,7 @@
 <style>
     body {
         font-family: 'Cairo', sans-serif;
-        font-family: 'Noto Naskh Arabic', serif;
+        /* font-family: 'Noto Naskh Arabic', serif; */
     }
 </style>
 <style>

@@ -53,7 +53,7 @@
     ?>
 
     <!-- Starting items main container -->
-    <div class="sections main-page col-lg-4 col-md-6 col-sm-4 col-xs-12 d-flex flex-wrap align-content-center mx-auto <?php echo count($icons) >= 3 ? 'gap-2' : ''; ?>">
+    <div class="sections main-page col-lg-4 col-md-6 col-sm-4 col-xs-12 d-flex flex-wrap align-content-center mx-auto px-4 <?php echo count($icons) >= 3 ? 'gap-2' : ''; ?>">
         <?php
             $order = 0;
             foreach ($icons as $icon) {
