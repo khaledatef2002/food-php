@@ -59,7 +59,7 @@
         --modal-header-color: <?php echo $colors_settings['modal_header_color']; ?>;
 
         --home-icons-visa-margins: <?php echo $is_visa_available ? '26px' : '0px'; ?>;
-        --home-icons-social-margins: <?php echo $is_social_media ? '40px' : '0px'; ?>;
+        --home-icons-social-margins: <?php echo $is_social_media ? '35px' : '0px'; ?>;
 
     }
 </style>
