@@ -453,7 +453,7 @@ $("#user_info button:last-of-type").click(function(){
   {
     $("#user_info input[name='how_pay']").notify(lang.choose_payment, "error")
   }
-  else if(how_pay == 0 && $("input[name='acceptance']").is(":checked") == false)
+  else if(how_pay == 1 && $("input[name='acceptance']").is(":checked") == false)
   {
     $("#user_info #accept_terms").notify("يجب الموافقة على الشروط والاحكام", "error")
   }
