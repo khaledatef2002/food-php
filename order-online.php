@@ -355,8 +355,8 @@
               <input name="acceptance" id="acceptance" type="checkbox" value="1">
               <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="acceptance" role="butotn">اوفق على <a href="terms" style="color:var(--radio-back);" target="_blank">الشروط والاحكام</a></label>
             </div>  
+            <hr>
           <?php } ?>
-          <hr>
           <div class="discounts_code" style="margin:auto;width:80%;margin-bottom:10px;">
             <span style="font-weight:bold;margin-bottom:15px;border-bottom: 1px solid black;"><?php echo __('discount_coupons'); ?>: </span> &nbsp; <span class="form-text">(<?php echo __('click_apply'); ?>)</span>
             <div class="coupon" style="margin:auto;width:100%;text-align:center;position:relative;margin-top:15px;">
