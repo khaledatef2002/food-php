@@ -93,15 +93,26 @@
                                             <input value="<?php echo $site_setting['tax']; ?>" name="website_taxs" id="website_taxs" type="number" min="0" ste="0.01" class="form-control border px-2" placeholder="ضريبة">
                                         </p>
                                         <p class="font-weight-bold text-dark">
+                                            <label for="order_from_branch" class="font-weight-bold text-dark">الاستلام من الفرع:</label>
+                                            <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
+                                                <label class="btn btn-secondary" for="order_from_branch1">
+                                                    <input <?php echo ($site_setting['order_from_branch'] == 1) ? 'CHECKED' : ''; ?> type="radio" name="order_from_branch" id="order_from_branch1" value="1"> متاح
+                                                </label>
+                                                <label class="btn btn-secondary" for="order_from_branch2">
+                                                    <input <?php echo ($site_setting['order_from_branch'] == 0) ? 'CHECKED' : ''; ?> type="radio" name="order_from_branch" id="order_from_branch2" value="0"> غير متاح
+                                                </label>
+                                            </div>
+                                        </p>
+                                        <p class="font-weight-bold text-dark">
                                             <label for="order_av" class="font-weight-bold text-dark">اتاحية الطلب:</label>
-                                        <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
-                                            <label class="btn btn-secondary" for="order_av1">
-                                                <input <?php echo ($site_setting['order_av'] == 1) ? 'CHECKED' : ''; ?> type="radio" name="order_av" id="order_av1" value="1"> متاح
-                                            </label>
-                                            <label class="btn btn-secondary" for="order_av2">
-                                                <input <?php echo ($site_setting['order_av'] == 0) ? 'CHECKED' : ''; ?> type="radio" name="order_av" id="order_av2" value="0"> غير متاح
-                                            </label>
-                                        </div>
+                                            <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
+                                                <label class="btn btn-secondary" for="order_av1">
+                                                    <input <?php echo ($site_setting['order_av'] == 1) ? 'CHECKED' : ''; ?> type="radio" name="order_av" id="order_av1" value="1"> متاح
+                                                </label>
+                                                <label class="btn btn-secondary" for="order_av2">
+                                                    <input <?php echo ($site_setting['order_av'] == 0) ? 'CHECKED' : ''; ?> type="radio" name="order_av" id="order_av2" value="0"> غير متاح
+                                                </label>
+                                            </div>
                                         </p>
                                         <p class="font-weight-bold text-dark">
                                             <label for="order_av_reason" class="font-weight-bold text-dark">سبب عدم الاتاحة:</label>

@@ -113,3 +113,27 @@ window.addEventListener('popstate', (e) => {
 
 
 });
+
+$("input[name='order-type']").change(function(){
+    var selected_type = $(this).val()
+    if(selected_type == 'delivery') {
+      show_delivery_fields();
+    } else {
+      hide_delivery_fields();
+      $(".coupon_activated p.code").text("")
+      $(".discounts_code input").val("")
+
+      $(".coupon_activated").hide()
+      $(".discounts_code .coupon").show()
+    }
+})
+
+function show_delivery_fields() {
+  $("#choose-area-input").show();
+  $("#choose-street-input").show();
+}
+
+function hide_delivery_fields() {
+  $("#choose-area-input").hide();
+  $("#choose-street-input").hide();
+}

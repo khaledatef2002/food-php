@@ -10,6 +10,7 @@ if (isset($_POST['data'])) {
     $get_code = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_discounts WHERE LOWER(code)=LOWER('" . $data['code'] . "')");
     if (mysqli_num_rows($get_code) > 0) {
         $code = mysqli_fetch_assoc($get_code);
+
         if ($code['min_order'] > 0) {
             $total_price = calc_total_price($_SESSION['cart']);
             if ($total_price < $code['min_order']) {
@@ -41,6 +42,18 @@ if (isset($_POST['data'])) {
             $data = [
                 "res"   =>  'fail',
                 "msg"   =>  __('discount_used_before')
+            ];
+            echo json_encode($data);
+            exit();
+        }
+
+        $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
+        $order_from_branch = mysqli_fetch_assoc($order_from_branch);
+
+        if ($order_from_branch['value'] == 1 && ($data['type'] != 'delivery' && $code['discount_type'] == 1)) {
+            $data = [
+                "res"   =>  'fail',
+                "msg"   =>  'هذا الخصم مخصص فقط لطلبات التوصل'
             ];
             echo json_encode($data);
             exit();

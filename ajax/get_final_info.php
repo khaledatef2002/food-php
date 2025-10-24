@@ -19,21 +19,28 @@ $data['price'] = calc_total_price($_SESSION['cart']);
 $rec = $_POST['data'];
 $rec['phone'] = filter_var(trim($rec['phone']), FILTER_SANITIZE_NUMBER_INT);
 
+// Get if order from branch is enabled
+$order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
+$order_from_branch = mysqli_fetch_assoc($order_from_branch);
 
-$_POST['del'] = filter_var($rec['del'], FILTER_SANITIZE_NUMBER_INT);
 
+if($rec['type'] == 'delivery' || $order_from_branch['value'] == 0) {
+    $rec['del'] = filter_var($rec['del'], FILTER_SANITIZE_NUMBER_INT);
+    // Getting Delivery Price
+    $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='" . $rec['del'] . "'");
+    $fetch = mysqli_fetch_assoc($get_price);
 
-// Getting Delivery Price
-$get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='" . $_POST['del'] . "'");
-$fetch = mysqli_fetch_assoc($get_price);
+    $data['del'] = $fetch['price'];
 
-$data['del'] = $fetch['price'];
+    // Getting Delivery Time
+    $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='delivery_time'");
+    $fetch = mysqli_fetch_assoc($get_price);
 
-// Getting Delivery Time
-$get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='delivery_time'");
-$fetch = mysqli_fetch_assoc($get_price);
-
-$data['del_time'] = $fetch['value'];
+    $data['del_time'] = $fetch['value'];
+} else {
+    $data['del'] = 0;
+    $data['del_time'] = "";
+}
 
 // Getting Delivery Phone
 $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='wh_order'");
@@ -107,6 +114,9 @@ foreach ($cart as $key => $item) {
 
 if (isset($_POST['data']['discount'])) {
     $discount_data = get_discount_values($_POST['data']['discount']);
+    if($rec['type'] != 'delivery') {
+        $discount_data['discount_delv'] = 0;
+    }
     $data['discount'] = $discount_data;
 }
 

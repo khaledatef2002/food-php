@@ -412,11 +412,14 @@ function get_category_info(int $id): array
 
 function check_new_number(string $phone): bool
 {
-    $phone = mysqli_real_escape_string($GLOBALS['conn'], $phone);
+    $conn = $GLOBALS['conn'];
 
-    $get_phone_order = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE client_phone='$phone'");
+    $phone = mysqli_real_escape_string($conn, $phone);
+    $sql = "SELECT 1 FROM food_orders WHERE client_phone='$phone'";
 
-    return mysqli_num_rows($get_phone_order) == 0;
+    $result = mysqli_query($conn, $sql);
+
+    return mysqli_num_rows($result) == 1;
 }
 
 function get_order_card(array $item): string
@@ -432,6 +435,9 @@ function get_order_card(array $item): string
     } else {
         $mark = 'red';
     };
+
+    $new = (check_new_number($item['client_phone'])) ? '<span class="badge bg-warning py-1">عميل جديد</span>' : '';
+
     $str = <<<HERE
         <div data-id="{$item['id']}" data-marked="{$item['marked']}" class="col-lg-3 col-md-4 col-sm-6 mb-2">       
             <div class="card mb-2 h-100 align-content-between" style="border-top: 10px solid {$mark}">
@@ -444,34 +450,36 @@ function get_order_card(array $item): string
                             <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>اسم العميل: <span class="font-weight-normal">{$item['client_name']}</span>
                         </p>
                         <p class="font-weight-bold my-0">
-                            <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>رقم الهاتف: <span class="font-weight-normal">{$item['client_phone']}</span>
+                            <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>رقم الهاتف: <span class="font-weight-normal">{$item['client_phone']}</span> $new
                         </p>
         HERE;
-
-
-    $new = (check_new_number($item['client_phone'])) ? '<span class="badge bg-warning py-1">عميل جديد</span>' : '';
-    $str .= <<<HERE
-                            $new            
-                        </p>
-            HERE;
-    $branch = "";
+            
     if ($item['client_branch'] != "") :
-        $branch = <<<HERE
+        $str .= <<<HERE
             <p class="font-weight-bold my-0">
                 <i role="button" class="fas fa-clipboard text-dark -button ms-2"></i>الفرع: <span class="font-weight-normal">{$item['client_branch']}</span>
             </p>
             HERE;
     endif;
+    
 
+    $order_type = $item['order_type'] == 'delivery' ? 'توصيل' : 'استلام من الفرع';
     $str .= <<<HERE
-        $branch
         <p class="font-weight-bold my-0">
-            <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>المنطقة: <span class="font-weight-normal">{$item['client_area_name']}</span>
-        </p>
-        <p class="font-weight-bold my-0">
-            <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>العنوان: <span class="font-weight-normal">{$item['client_address']}</span>
+            <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>نوع الطلب: <span class="font-weight-normal">{$order_type}</span>
         </p>
     HERE;
+
+    if($item['order_type'] == 'delivery') {
+        $str .= <<<HERE
+            <p class="font-weight-bold my-0">
+                <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>المنطقة: <span class="font-weight-normal">{$item['client_area_name']}</span>
+            </p>
+            <p class="font-weight-bold my-0">
+                <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>العنوان: <span class="font-weight-normal">{$item['client_address']}</span>
+            </p>
+        HERE;
+    }
     if ($item['client_notice'] != "") {
         $str .= <<<HERE
            <p class="font-weight-bold my-0">
@@ -488,10 +496,15 @@ function get_order_card(array $item): string
                         <p class="font-weight-bold my-0">
                             إجمال الطلب: <span class="font-weight-normal">$total_order_price $currency</span>
                         </p>
-                        <p class="font-weight-bold my-0">
-                            التوصيل: <span class="font-weight-normal">{$item['address_price']} $currency</span>
-                        </p>
             HERE;
+
+    if($item['order_type'] == 'delivery') {
+        $str .= <<<HERE
+                <p class="font-weight-bold my-0">
+                    التوصيل: <span class="font-weight-normal">{$item['address_price']} $currency</span>
+                </p>
+            HERE;
+    }
     $discount = "";
     if ($item['delivery_discount'] > 0 || $item['total_discount'] > 0) {
         if ($item['delivery_discount'] > 0)

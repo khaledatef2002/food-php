@@ -48,8 +48,6 @@ if (
                 exit;
             }
 
-
-
             $website_name = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['website_name']));
             $website_keywords = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['website_keywords']));
             $website_description = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['website_description']));
@@ -64,6 +62,7 @@ if (
             $time_zone = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['time_zone']));
             $dir = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['dir']));
             $lang = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['lang']));
+            $order_from_branch = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['order_from_branch'], FILTER_SANITIZE_NUMBER_INT));
 
 
 
@@ -81,6 +80,7 @@ if (
             $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$time_zone' WHERE title='time_zone'");
             $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$dir' WHERE title='dir'");
             $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$lang' WHERE title='lang'");
+            $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$order_from_branch' WHERE title='order_from_branch'");
 
             if (isset($_FILES['website_logo']) && !empty($_FILES['website_logo']) && $_FILES["website_logo"]["error"] == 0) {
                 $msg = upload_image($_FILES['website_logo']);

@@ -55,7 +55,7 @@
       content: "✓";
       color: var(--radio-color);
       position: absolute;
-      top: 3px;
+      top: 1px;
       left: 2px;
       font-size: 15px;
     }
@@ -272,6 +272,31 @@
             $order_info = json_decode($_COOKIE['order_info']);
           }
           ?>
+          <div class="justify-content-evenly align-items-center mt-3" style="<?php echo $site_setting['order_from_branch'] == 1 ? 'display: flex' : 'display: none'; ?>">
+            <div role="button">
+                <input type="radio" class="btn-check" name="order-type" id="order-type-delivery" value="delivery" autocomplete="off" checked>
+                <label class="btn btn-secondary border-0 d-flex flex-column justify-content-center align-items-center gap-1" for="order-type-delivery">
+                    <img class="p-2" src="imgs/delivery-icon.png" width="60px">
+                    <span class="fw-bold">توصيل</span>
+                </label>
+            </div>
+            <?php
+              if ($site_setting['order_from_branch'] == 1) {
+            ?>
+            <div role="button">
+                <input type="radio" class="btn-check" name="order-type" id="order-type-branch" value="branch" autocomplete="off">
+                <label class="btn btn-secondary border-0 d-flex flex-column justify-content-center align-items-center gap-1" for="order-type-branch">
+                    <img class="p-2" src="imgs/branch-icon.png" width="60px">
+                    <span class="fw-bold">استلام من الفرع</span>
+                </label>
+            </div>
+            <?php } ?>
+          </div>
+          <?php
+            if ($site_setting['order_from_branch'] == 1) {
+          ?>
+            <hr> 
+          <?php } ?>
           <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
             <label><?php echo __('name'); ?> <span style="font-size: 10px;color: gray;">(<?php echo __('at_least_2'); ?>)</span></label>
             <input class="name form-control bg-light" type="text" style="width:100%;" value="<?php echo $order_info[0] ?? ''; ?>" placeholder="<?php __('enter_your_name'); ?>">
@@ -284,17 +309,17 @@
           <?php
           $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches ORDER BY branch_name ASC");
           ?>
-          <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px; <?php echo (mysqli_num_rows($query) <= 1) ? 'display:none;' : ''; ?>">
+          <div id="choose-branch-input" class="mt-3" style="margin:auto;width:80%;margin-bottom:10px; <?php echo (mysqli_num_rows($query) <= 1) ? 'display:none;' : ''; ?>">
             <label><?php echo __('choose_branch'); ?></label>
             <select class="form-select bg-light" style="width:100%;" id="del-branch" placeholder="<?php echo __('choose_branch'); ?>">
             </select>
           </div>
-          <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
+          <div id="choose-area-input" class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
             <label><?php echo __('choose_area'); ?></label>
             <select class="bg-light" style="width:100%;" id="del-loc" placeholder="<?php echo __('choose_area'); ?>">
             </select>
           </div>
-          <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
+          <div id="choose-street-input" class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
             <label><?php echo __('address'); ?></label>
             <textarea style="width:100%;" class="street form-control bg-light" placeholder="<?php echo __('enter_address'); ?>"><?php echo $order_info[3] ?? ''; ?></textarea>
           </div>
@@ -307,24 +332,30 @@
             <label style="line-height: 20px;vertical-align: top;"><?php echo __('save_me'); ?></label>
           </div>
           <hr>
-          <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
+          <div class="mt-3 ms-4" style="margin:auto;margin-bottom:5px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
             <label style="line-height: 20px;vertical-align: top;"><?php echo __('payment_method'); ?>: </label>
           </div>
-          <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
+          <div class="bg-white border-0 mb-2 rounded-3 align-items-center justify-content-between p-2 ms-4" role="button" style="<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : 'display:flex;'; ?>">
+            <label for="how_pay_1" role="button">
+              <img src="imgs/cash.png" width="30px" class="me-2">
+              الدفع عند الاستلام
+            </label>
             <input name="how_pay" id="how_pay_1" type="radio" value="0" CHECKED>
-            <label style="line-height: 20px;vertical-align: top;" for="how_pay_1"><?php echo __('payment_with_hands'); ?></label>
           </div>
           <?php if ($site_setting['visa_av'] == 1) { ?>
-            <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : ''; ?>">
+            <div class="bg-white border-0 mb-2 rounded-3 align-items-center justify-content-between p-2 ms-4" role="button" style="<?php echo ($site_setting['visa_av'] == 0) ? 'display:none;' : 'display:flex;'; ?>">
+              <label for="how_pay_2" role="button">
+                <img src="imgs/visa.png" width="40px" class="me-2">
+                بطاقة الائتمان
+              </label>
               <input name="how_pay" id="how_pay_2" type="radio" value="1">
-              <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="how_pay_2"><?php echo __('payment_with_visa'); ?></label>
             </div>
+            <hr>
+            <div id="accept_terms" class="mt-1" style="margin:auto;width:80%;">
+              <input name="acceptance" id="acceptance" type="checkbox" value="1">
+              <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="acceptance" role="butotn">اوفق على <a href="terms" style="color:var(--radio-back);" target="_blank">الشروط والاحكام</a></label>
+            </div>  
           <?php } ?>
-          <hr>
-          <div id="accept_terms" class="mt-1" style="margin:auto;width:80%;">
-            <input name="acceptance" id="acceptance" type="checkbox" value="1">
-            <label style="line-height: 20px;vertical-align: top;padding-top:3px;" for="acceptance" role="butotn">اوفق على <a href="terms" style="color:var(--radio-back);" target="_blank">الشروط والاحكام</a></label>
-          </div>  
           <hr>
           <div class="discounts_code" style="margin:auto;width:80%;margin-bottom:10px;">
             <span style="font-weight:bold;margin-bottom:15px;border-bottom: 1px solid black;"><?php echo __('discount_coupons'); ?>: </span> &nbsp; <span class="form-text">(<?php echo __('click_apply'); ?>)</span>
@@ -372,11 +403,15 @@
             <span><?php echo __('phone'); ?>: </span>
             <span class="phone"></span>
           </div>
-          <div class="d-flex justify-content-between mx-auto" style="width:80%;">
+          <div id="order_type" class="d-flex justify-content-between mx-auto" style="width:80%;">
+            <span>نوع الطلب: </span>
+            <span></span>
+          </div>
+          <div class="justify-content-between mx-auto" style="width:80%;">
             <span><?php echo __('area'); ?>: </span>
             <span class="del-loc"></span>
           </div>
-          <div class="d-flex justify-content-between mx-auto" style="width:80%;">
+          <div class="justify-content-between mx-auto" style="width:80%;">
             <span><?php echo __('address'); ?>: </span>
             <span class="street"></span>
           </div>
@@ -407,7 +442,7 @@
             <span><?php echo __('order_discount'); ?>: </span>
             <span></span>
           </div>
-          <div class="mx-auto d-flex justify-content-between" style="width:80%;">
+          <div class="mx-auto justify-content-between" style="width:80%;">
             <span><?php echo __('delivery'); ?>: </span>
             <span class="del"></span>
           </div>
@@ -427,7 +462,7 @@
             <span><?php echo __('total_cost'); ?>: </span>
             <span class="total_price"></span>
           </div>
-          <div class="mx-auto d-flex flex-wrap justify-content-between" style="width:80%;">
+          <div class="mx-auto flex-wrap justify-content-between" style="width:80%;">
             <span><?php echo __('delivery_time'); ?>: </span>
             <span class="del_time"></span>
           </div>

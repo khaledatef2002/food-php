@@ -37,37 +37,57 @@
     {
         exit();
     }
-    else if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
+    else if($data['type'] == 'delivery')
     {
-        exit();
-    }
-    else if(empty(trim($data['client_address'])) || strlen(trim($data['client_address'])) < 5 || strpos($data['client_address'],'<') !== false || strpos($data['client_address'],'>') !== false || strpos($data['client_address'],'"') !== false || strpos($data['client_address'],"'") !== false || strpos($data['client_address'],'/') !== false || strpos($data['client_address'],'&') !== false || strpos($data['client_address'],';') !== false)
-    {
-        exit();
+        if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
+        {
+            exit();
+        }
+        else if(empty(trim($data['client_address'])) || strlen(trim($data['client_address'])) < 5 || strpos($data['client_address'],'<') !== false || strpos($data['client_address'],'>') !== false || strpos($data['client_address'],'"') !== false || strpos($data['client_address'],"'") !== false || strpos($data['client_address'],'/') !== false || strpos($data['client_address'],'&') !== false || strpos($data['client_address'],';') !== false)
+        {
+            exit();
+        }
     }
 
     $data['client_name'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_name']));
     $data['client_phone'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_phone']));
-    $data['client_location'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_location']));
-    $data['client_address'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_address']));
-    $data['client_notice'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_notice']));
 
-    // Getting Delivery Price
+    //Getting branch Name
     $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='".$data['client_location']."'");
     $fetch = mysqli_fetch_assoc($get_price);
-    
-    //Getting branch Name
+
     $get_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='".$fetch['branch_id']."'");
     $fetchBranch = mysqli_fetch_assoc($get_branch);
 
     $branch = $fetchBranch['branch_name'];
     $branch_id = $fetchBranch['id'];
-    $del_price = $fetch['price'];
+
+    $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
+    $order_from_branch = mysqli_fetch_assoc($order_from_branch);
+
+    if($data['type'] == 'delivery' || $order_from_branch['value'] == 0)
+    {
+        $data['client_location'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_location']));
+        $data['client_address'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_address']));
+        
+        $del_price = $fetch['price'];
+
+        $client_area_name = get_area_info($data['client_location'])['name'];
+    }
+    else
+    {
+        $data['client_location'] = 0;
+        $data['client_address'] = "استلام من الفرع";
+
+        $del_price = 0;
+
+        $client_area_name = "";
+    }
+    $data['client_notice'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_notice']));
 
     $tax = get_total_tax($cart) + (get_general_tax() * $del_price / 100);
     
     $date = time();
-    $client_area_name = get_area_info($data['client_location'])['name'];
 
     $discount_data = [
             "discount_id" => "",
@@ -78,11 +98,15 @@
     if(isset($_POST['data']['discount']))
     {
         $discount_data = get_discount_values($_POST['data']['discount']);
+
+        if($data['type'] != 'delivery') {
+            $discount_data['discount_delv'] = 0;
+        }
     }
 
     $total_order = calc_total_price($cart) + $del_price + $tax - $discount_data['discount_total'] - $discount_data['discount_delv'];
 
-    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch,client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax, total_order) VALUES ('".$data['client_name']."','".$data['client_phone']."','".$branch_id."','".$branch."','".$data['client_location']."','".$client_area_name."','".$data['client_address']."','".$del_price."','".$data['client_notice']."','".$date."','".$discount_data['discount_id']."','".$discount_data['discount_code']."','".$discount_data['discount_name']."','".$discount_data['discount_delv']."','".$discount_data['discount_total']."', '$tax', '".$total_order."')");
+    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch, order_type, client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax, total_order) VALUES ('".$data['client_name']."','".$data['client_phone']."','".$branch_id."','".$branch."', '".$data['type']."','".$data['client_location']."','".$client_area_name."','".$data['client_address']."','".$del_price."','".$data['client_notice']."','".$date."','".$discount_data['discount_id']."','".$discount_data['discount_code']."','".$discount_data['discount_name']."','".$discount_data['discount_delv']."','".$discount_data['discount_total']."', '$tax', '".$total_order."')");
 
     $order_id = mysqli_insert_id($GLOBALS['conn']);
 

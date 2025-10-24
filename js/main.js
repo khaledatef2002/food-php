@@ -412,7 +412,6 @@ $("#user_info button:last-of-type").click(function(){
   $("#final_info div:has( > #total_tax)").css("display","none")
   $("#final_info div:has( > #visa_tax)").css("display","none")
 
-
   var data = [];
   var phone = $("#user_info input.phone").val()
   var discount_data = {
@@ -422,14 +421,17 @@ $("#user_info button:last-of-type").click(function(){
   }
 
   var how_pay = $("#user_info input[name='how_pay']:checked").val()
+  var order_type = $("#user_info input[name='order-type']:checked").val()
+
   
-  var to_send = {"phone": phone, "discount": discount_data, "del" : delivery, 'method': how_pay}
+  var to_send = {"phone": phone, "discount": discount_data, "del" : delivery, 'method': how_pay, 'type': order_type}
   
   data.push($("#user_info input.name").val())
   data.push($("#user_info input.phone").val())
   data.push($("#user_info #del-loc option:selected").text())
   data.push($("#user_info .street").val())
   data.push($("#user_info .notice").val())
+  data.push(order_type)
 
 
   if(data[0].trim() == "" || data[0].trim().split(" ").length < 2 || data[0].length < 3 || data[0].includes("<") || data[0].includes(">") || data[0].includes("'") || data[0].includes('"') || data[0].includes("/") || data[0].includes("&") || data[0].includes(";"))
@@ -440,11 +442,10 @@ $("#user_info button:last-of-type").click(function(){
   {
     $("#user_info input.phone").notify(lang.enter_correct_phone, "error");
   }
-  else if (data[2].trim() == "" || isNaN(delivery.trim()))
-  {
+  else if (order_type == 'delivery' && (data[2].trim() == "" || isNaN(delivery.trim()))) {
     $("#user_info #del-loc").parent().notify(lang.enter_area, "error");
   }
-  else if (data[3].trim() == "" || data[3].length < 5 || data[3].includes("<") || data[3].includes(">") || data[3].includes("'") || data[3].includes('"') || data[3].includes("/") || data[3].includes("&") || data[3].includes(";"))
+  else if (order_type == 'delivery' && (data[3].trim() == "" || data[3].length < 5 || data[3].includes("<") || data[3].includes(">") || data[3].includes("'") || data[3].includes('"') || data[3].includes("/") || data[3].includes("&") || data[3].includes(";")))
   {
     $("#user_info .street").notify(lang.enter_address, "error");
   }
@@ -463,6 +464,20 @@ $("#user_info button:last-of-type").click(function(){
     $("#final_info .phone").text(data[1])
     $("#final_info .del-loc").text(data[2])
     $("#final_info .street").text(data[3])
+    $("#final_info #order_type span:last-of-type").text(data[5] == 'delivery' ? "توصيل" : "استلام من الفرع")
+
+    if(data[5] == 'delivery') {
+      $("#final_info div:has(> .del-loc)").css("display", "flex");
+      $("#final_info div:has(> .street)").css("display", "flex");
+      $("#final_info div:has( > .del )").css("display", "flex");
+      $("#final_info div:has( > .del_time )").css("display", "flex");
+    } else {
+      $("#final_info div:has(> .del-loc)").css("display", "none");
+      $("#final_info div:has(> .street)").css("display", "none");
+      $("#final_info div:has( > .del )").css("display", "none");
+      $("#final_info div:has( > .del_time )").css("display", "none");
+    }
+
     if(data[4].trim() != "")
     {
       $("#final_info .notice").text(data[4])
@@ -491,20 +506,20 @@ $("#user_info button:last-of-type").click(function(){
           $("#final_info #order_discount").css("display", "flex")
           $("#final_info #order_discount span:last-of-type").text("- " + data.discount.discount_total + " " + currency)
         }
-        if(data.discount.discount_delv > 0)
+        if(data.discount.discount_delv > 0 && data[5] == 'delivery')
         {
           discount = data.discount.discount_delv
           $("#final_info #delivery_discount").css("display", "flex")
           $("#final_info #delivery_discount span:last-of-type").text("- " + discount + " " + currency)
         }
-       
       }
-
 
       var total_price = Math.ceil(parseFloat(data.del) + parseFloat(data.price) - parseFloat(discount) + parseFloat(data.tax))
       $("#final_info .price").text(data.price + " " + currency)
-      $("#final_info .del").text(data.del + " " + currency)
-      $("#final_info .del_time").text(data.del_time)
+      if(order_type == 'delivery') {
+        $("#final_info .del").text(data.del + " " + currency)
+        $("#final_info .del_time").text(data.del_time)
+      }
       var visa_tax = 0
       if(data.visa_fixed_tax > 0 || data.visa_percent_tax > 0)
       {
@@ -615,30 +630,41 @@ $("#final_info button:last-of-type").click(async function(){
   $("#final_info button:last-of-type").prop("disabled", true)
   var discount_code = $("#user_info .coupon_activated input[name='coupon_code']").val().trim()
   var delivery = $("#user_info .modal-body #del-loc").val()
+  var order_type = $("#user_info input[name='order-type']:checked").val()
+
   var data = [];
   data.push($("#user_info input.name").val())
   data.push($("#user_info input.phone").val())
   data.push($("#user_info #del-loc option:selected").text())
   data.push($("#user_info .street").val())
   data.push($("#user_info .notice").val())
+  data.push(order_type)
 
   var how_pay = $("#user_info input[name='how_pay']:checked").val()
 
-    var phone = $("#user_info input.phone").val()
-    var discount_data = {
-      code: discount_code,
-      location: delivery,
-      phone: phone
-    }
+  var phone = $("#user_info input.phone").val()
+  var discount_data = {
+    code: discount_code,
+    location: delivery,
+    phone: phone
+  }
   
-    var to_send = {"phone": phone, "discount": discount_data, "del" : delivery, "method": how_pay}
+    var to_send = {"phone": phone, "discount": discount_data, "del" : delivery, "method": how_pay, "type": order_type}
   
     var text = `
     ----------------
     ${lang.name}: ${data[0]}
     ${lang.phone}: ${data[1]}
-    ${lang.area}: ${data[2]}
-    ${lang.address}: ${data[3]}
+    `
+    if(order_type == 'delivery') {
+    text += `
+      ${lang.area}: ${data[2]}
+      ${lang.address}: ${data[3]}
+      `
+    }
+
+    text += `
+    نوع الطلب: ${data[5] == "delivery" ? "توصيل" : "استلام من الفرع"}
     `
   
     if (how_pay == 0)
@@ -697,6 +723,7 @@ $("#final_info button:last-of-type").click(async function(){
         }
   
       })
+
     var total_discount = 0
     var total = ""
     var delv = ""
@@ -709,7 +736,7 @@ $("#final_info button:last-of-type").click(async function(){
         total = `
       ${lang.order_discount}: -${data.discount.discount_total} ${currency}`
       }
-      if(data.discount.discount_delv > 0)
+      if(data.discount.discount_delv > 0 && order_type == "delivery")
       {
         total_discount = data.discount.discount_delv
         delv = `
@@ -739,7 +766,15 @@ $("#final_info button:last-of-type").click(async function(){
       ${lang.pay_info}
       ----------------
       ${lang.sum}: ${data.price} ${currency}${total}
-      ${lang.delivery}: ${data.del} ${currency}${delv}${tax_line}
+      `
+      if(order_type == "delivery")
+      {
+        text += `
+        ${lang.delivery}: ${data.del} ${currency}${delv}${tax_line}
+        `
+      }
+      
+      text += `
       ${lang.total_cost}: ${last_price} ${currency}
       `
   
@@ -750,6 +785,7 @@ $("#final_info button:last-of-type").click(async function(){
         "client_address": form_data[3],
         "client_notice": form_data[4],
         "discount": discount_data,
+        "type": order_type,
       }
 
       if(how_pay == 1)
@@ -801,10 +837,13 @@ $("#check_discount").click(function(){
   var delivery = $("#user_info .modal-body #del-loc").val()
   var code = $(this).parent().find("input").val().trim()
   var phone = $("#user_info input.phone").val()
+  var order_type = $("#user_info input[name='order-type']:checked").val()
+
   var data = {
     code: code,
     location: delivery,
-    phone: phone
+    phone: phone,
+    type: order_type
   }
   $.post("ajax/check_discount_code.php", {data:data}, function(result){
     var data = JSON.parse(result)
@@ -826,7 +865,7 @@ $("#check_discount").click(function(){
 
 $(".coupon_activated span.remove").click(function(){
   $(".coupon_activated p.code").text("")
-  $(".coupon_activated input").val("")
+  $(".discounts_code input").val("")
 
   $(".coupon_activated").hide()
   $(".discounts_code .coupon").show()
