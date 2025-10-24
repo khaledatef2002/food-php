@@ -415,11 +415,11 @@ function check_new_number(string $phone): bool
     $conn = $GLOBALS['conn'];
 
     $phone = mysqli_real_escape_string($conn, $phone);
-    $sql = "SELECT 1 FROM food_orders WHERE client_phone='$phone'";
+    $sql = "SELECT 1 FROM food_orders WHERE client_phone='$phone' AND NOT marked = 0";
 
     $result = mysqli_query($conn, $sql);
 
-    return mysqli_num_rows($result) == 1;
+    return mysqli_num_rows($result) == 0;
 }
 
 function get_order_card(array $item): string
