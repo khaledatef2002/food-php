@@ -53,20 +53,18 @@
     $data['client_phone'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_phone']));
 
     //Getting branch Name
-    $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='".$data['client_location']."'");
-    $fetch = mysqli_fetch_assoc($get_price);
-
-    $get_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='".$fetch['branch_id']."'");
-    $fetchBranch = mysqli_fetch_assoc($get_branch);
-
-    $branch = $fetchBranch['branch_name'];
-    $branch_id = $fetchBranch['id'];
+    
 
     $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
     $order_from_branch = mysqli_fetch_assoc($order_from_branch);
 
     if($data['type'] == 'delivery' || $order_from_branch['value'] == 0)
     {
+        $get_price = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='".$data['client_location']."'");
+        $fetch = mysqli_fetch_assoc($get_price);
+
+        $branch_id = $fetch['branch_id'];
+
         $data['client_location'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_location']));
         $data['client_address'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_address']));
         
@@ -75,7 +73,9 @@
         $client_area_name = get_area_info($data['client_location'])['name'];
     }
     else
-    {
+    {   
+        $branch_id = $data['client_branch'];
+        
         $data['client_location'] = 0;
         $data['client_address'] = "استلام من الفرع";
 
@@ -83,6 +83,12 @@
 
         $client_area_name = "";
     }
+
+    $get_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='".$branch_id."'");
+    $fetchBranch = mysqli_fetch_assoc($get_branch);
+
+    $branch = $fetchBranch['branch_name'];
+
     $data['client_notice'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_notice']));
 
     $tax = get_total_tax($cart) + (get_general_tax() * $del_price / 100);

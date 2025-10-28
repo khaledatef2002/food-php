@@ -781,6 +781,7 @@ $("#final_info button:last-of-type").click(async function(){
       var order_info = {
         "client_name": form_data[0],
         "client_phone": form_data[1],
+        "client_branch": $("#del-branch").val(),
         "client_location": delivery,
         "client_address": form_data[3],
         "client_notice": form_data[4],
