@@ -22,18 +22,14 @@
         Powered by diafh
     </title>
     <style>
-            body {
-                width: 58mm;
-            }
+            
             .receipt {
-                width: 58mm;
                 font-size: 12px; /* Adjust as needed */
             }
         tbody th {
             border-left: 1px solid #c9c9c9;
         }
         tr, td, th {
-            width: 58mm;
             white-space: normal !important;
         }
     </style>
