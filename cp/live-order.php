@@ -184,10 +184,10 @@
                                 })
                             } else if (val.type == "accept") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.replaceWith($(val.order))
+                                parent.html(val.order)
                             } else if (val.type == "cancel") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.replaceWith($(val.order))
+                                parent.html(val.order)
                             } else if (val.type == "remove") {
                                 $(`#parent > div[data-id='${val.order_id}']`).remove()
                             } else if (val.type == "emptyAll") {
