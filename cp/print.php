@@ -23,17 +23,17 @@
     </title>
     <style>
             body {
-                width: 80mm;
+                width: 58mm;
             }
             .receipt {
-                width: 80mm;
+                width: 58mm;
                 font-size: 12px; /* Adjust as needed */
             }
         tbody th {
             border-left: 1px solid #c9c9c9;
         }
         tr, td, th {
-            width: 80mm;
+            width: 58mm;
             white-space: normal !important;
         }
     </style>
@@ -64,35 +64,35 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
 <body class="g-sidenav-show rtl bg-gray-200">
     <img class="mx-auto d-block" src="../<?php echo $site_setting['site-logo']; ?>" alt="<?php echo $site_setting['site-title']; ?>" width="70px">
     <h4 class="text-center mt-2">رقم الطلب: #<?php echo $id; ?></h4>
-    <table class="table table-striped receipt">
+    <table class="table receipt fw-bold">
         <thead>
-            <tr class="text-center table-dark" style="border-color: #000; border-width: 2px 0">
+            <tr class="text-center" style="border-color: #000; border-width: 2px 0">
                 <th colspan="100%">بيانات العميل</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr class="border">
                 <th>اسم العميل</th>
                 <td><?php echo $item['client_name']; ?></td>
             </tr>
-            <tr>
+            <tr class="border">
                 <th>رقم الهاتف</th>
                 <td><?php echo $item['client_phone']; ?></td>
             </tr>
-            <tr>
+            <tr class="border">
                 <th>منطقة التوصيل</th>
                 <td><?php echo $item['client_area_name']; ?></td>
             </tr>
-            <tr>
+            <tr class="border">
                 <th>عنوان التوصيل</th>
                 <td><?php echo $item['client_address']; ?></td>
             </tr>
-            <tr>
+            <tr class="border">
                 <th>تاريخ الطلب</th>
                 <td><?php echo date("Y-m-d h:i:s a", $item['ordered_date']); ?></td>
             </tr>
             <?php if ($item['method'] == 1) : ?>
-                <tr>
+                <tr class="border">
                     <th>طريقة الدفع:</th>
                     <td>visa/matercard</td>
                 </tr>
@@ -100,19 +100,19 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
         </tbody>
         <thead>
             <tr class="text-center" style="border-color: #000; border-width: 2px 0">
-                <th colspan="100%" class="table-dark">تفاصيل الطلب</th>
+                <th colspan="100%">تفاصيل الطلب</th>
             </tr>
         </thead>
         <tbody>
             <?php while ($cart = mysqli_fetch_assoc($get_cart_info)) { ?>
-                <tr>
-                    <th><?php echo "<bdi style='direction:ltr;'>"  . $cart['item_count'] . " X </bdi>" . $cart['item_name']; ?></td>
+                <tr class="border">
+                    <td <?php echo $cart['item_price'] == 0 ? 'colspan="2"' : ''; ?>><?php echo "<bdi style='direction:ltr;'>"  . $cart['item_count'] . " X </bdi>" . $cart['item_name']; ?></td>
                     <?php if($cart['item_price'] > 0): ?>
                         <td><?php echo $cart['item_price'] . " " . $currency; ?></td>
                     <?php endif; ?>
                 </tr>
                 <?php if ($cart['item_size'] != 0): ?>
-                    <tr>
+                    <tr class="border">
                         <td class="ps-5">Size : <?php echo $cart['item_size_name']; ?></td>
                     </tr>
                 <?php endif; ?>
@@ -120,7 +120,7 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
                     $get_options = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_options WHERE order_card_id='" . $cart['id'] . "'");
                     while ($option = mysqli_fetch_assoc($get_options)):
                 ?>
-                    <tr>
+                    <tr class="border">
                         <td class="ps-5" <?php echo ($option['option_price'] == 0) ? 'colspan="2"': ''; ?>><?php echo $option['option_name'] ?> : <?php echo $option['option_value']; ?></td>
                         <?php if($option['option_price'] > 0): ?>
                             <td class="ps-5"><?php echo "[+" . $option['option_price'] . " " . $currency . "]"; ?></td>
@@ -131,7 +131,7 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
         </tbody>
         <?php if ($item['client_notice'] != ""): ?>
             <thead>
-                <tr class="text-center table-dark" style="border-color: #000; border-width: 2px 0">
+                <tr class="text-center" style="border-color: #000; border-width: 2px 0">
                     <th colspan="100%">ملاحظات على الطلب</th>
                 </tr>
             </thead>
@@ -142,7 +142,7 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
             </tbody>
         <?php endif; ?>
         <thead>
-            <tr class="text-center table-dark" style="border-color: #000; border-width: 2px 0">
+            <tr class="text-center" style="border-color: #000; border-width: 2px 0">
                 <th colspan="100%">تفاصيل الدفع</th>
             </tr>
         </thead>
