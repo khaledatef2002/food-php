@@ -185,6 +185,7 @@
                             } else if (val.type == "accept") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
                                 parent.html(val.order)
+                                alert("accepted")
                             } else if (val.type == "cancel") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
                                 parent.html(val.order)
