@@ -36,6 +36,23 @@
             width: 58mm;
             white-space: normal !important;
         }
+
+        @media print {
+            @page {
+                padding-top: 20px;
+                margin: 0; /* Remove default browser print margins */
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Optional: Adjust elements to fit exactly the page */
+            * {
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <?php
