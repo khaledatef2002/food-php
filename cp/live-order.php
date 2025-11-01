@@ -162,7 +162,7 @@
                     last: last_notify,
                     page: 'order'
                 }, function(result) {
-                    aleryt("got live notify")
+                    alert("got live notify")
                     if (result != "empty") {
                         var data = JSON.parse(result)
                         data.forEach(function(val, index) {
