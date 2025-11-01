@@ -163,10 +163,8 @@
                     page: 'order'
                 }, function(result) {
                     if (result != "empty") {
-                        alert("got live notify")
                         var data = JSON.parse(result)
                         data.forEach(function(val, index) {
-                            alert("val type is" + val.type)
                             if (val.type == "add") {
                                 alert("added")
                                 $("#parent").prepend(val.order)
@@ -177,13 +175,13 @@
                                         icon: '../<?php echo $site_setting['site-logo']; ?>'
                                     }
                                 );
-                                notify.onclick = function() {
-                                    window.focus();
-                                    notification.close();
-                                };
-                                notify.addEventListener("error", e => {
-                                    alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
-                                })
+                                // notify.onclick = function() {
+                                //     window.focus();
+                                //     notification.close();
+                                // };
+                                // notify.addEventListener("error", e => {
+                                //     alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
+                                // })
                             } else if (val.type == "accept") {
                                 alert("accepted")
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
