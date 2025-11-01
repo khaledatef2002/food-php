@@ -169,12 +169,12 @@
                                 alert("added")
                                 $("#parent").prepend(val.order)
 
-                                var notify = new Notification(
-                                    `لقد تم اضافة طلب جديد!`, {
-                                        body: `رقم الاوردر #${val.order_id}`,
-                                        icon: '../<?php echo $site_setting['site-logo']; ?>'
-                                    }
-                                );
+                                // var notify = new Notification(
+                                //     `لقد تم اضافة طلب جديد!`, {
+                                //         body: `رقم الاوردر #${val.order_id}`,
+                                //         icon: '../<?php echo $site_setting['site-logo']; ?>'
+                                //     }
+                                // );
                                 // notify.onclick = function() {
                                 //     window.focus();
                                 //     notification.close();
