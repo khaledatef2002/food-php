@@ -49,7 +49,7 @@
                     $earnAll = 0;
                     $earnToday = 0;
 
-                    $thisMonthStart = strtotime('first day of this month');
+                    $thisMonthStart = strtotime('first day of this month midnight');
                     $thisDayStart = strtotime('midnight today');
 
                     $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) FROM food_orders WHERE marked=1 AND ordered_date >= '$thisMonthStart'");
