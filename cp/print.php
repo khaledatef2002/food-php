@@ -79,7 +79,7 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
 ?>
 
 <body class="g-sidenav-show rtl bg-gray-200">
-    <img class="mx-auto d-block" style="filter: grayscale(100%) contrast(200%) brightness(50%);" src="../<?php echo $site_setting['site-logo']; ?>" alt="<?php echo $site_setting['site-title']; ?>" width="70px">
+    <img class="mx-auto d-block" src="../<?php echo $site_setting['site-logo']; ?>" alt="<?php echo $site_setting['site-title']; ?>" width="70px">
     <h4 class="text-center mt-2">رقم الطلب: #<?php echo $id; ?></h4>
     <table class="table receipt fw-bold">
         <thead>
