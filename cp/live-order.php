@@ -165,6 +165,7 @@
                     alert("got live notify")
                     if (result != "empty") {
                         var data = JSON.parse(result)
+                        alert("val type is" + val.type)
                         data.forEach(function(val, index) {
                             if (val.type == "add") {
                                 alert("added")
