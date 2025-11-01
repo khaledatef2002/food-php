@@ -162,11 +162,11 @@
                     last: last_notify,
                     page: 'order'
                 }, function(result) {
-                    alert("got live notify")
                     if (result != "empty") {
+                        alert("got live notify")
                         var data = JSON.parse(result)
-                        alert("val type is" + val.type)
                         data.forEach(function(val, index) {
+                            alert("val type is" + val.type)
                             if (val.type == "add") {
                                 alert("added")
                                 $("#parent").prepend(val.order)
