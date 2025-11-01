@@ -23,17 +23,17 @@
     </title>
     <style>
             body {
-                width: 50mm;
+                width: 65mm;
             }
             .receipt {
-                width: 50mm;
+                width: 65mm;
                 font-size: 16px; /* Adjust as needed */
             }
         tbody th {
             border-left: 1px solid #c9c9c9;
         }
         tr, td, th {
-            width: 50mm;
+            width: 65mm;
             white-space: normal !important;
         }
     </style>
