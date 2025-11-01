@@ -27,7 +27,7 @@
             }
             .receipt {
                 width: 58mm;
-                font-size: 16px; /* Adjust as needed */
+                font-size: 12px; /* Adjust as needed */
             }
         tbody th {
             border-left: 1px solid #c9c9c9;
