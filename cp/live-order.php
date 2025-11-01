@@ -162,11 +162,12 @@
                     last: last_notify,
                     page: 'order'
                 }, function(result) {
-                    console.log(result)
+                    aleryt("got live notify")
                     if (result != "empty") {
                         var data = JSON.parse(result)
                         data.forEach(function(val, index) {
                             if (val.type == "add") {
+                                alert("added")
                                 $("#parent").prepend(val.order)
 
                                 var notify = new Notification(
@@ -183,9 +184,9 @@
                                     alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
                                 })
                             } else if (val.type == "accept") {
+                                alert("accepted")
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
                                 parent.html(val.order)
-                                alert("accepted")
                             } else if (val.type == "cancel") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
                                 parent.html(val.order)
