@@ -166,29 +166,30 @@
                         var data = JSON.parse(result)
                         data.forEach(function(val, index) {
                             if (val.type == "add") {
-                                alert("added")
                                 $("#parent").prepend(val.order)
-
-                                // var notify = new Notification(
-                                //     `لقد تم اضافة طلب جديد!`, {
-                                //         body: `رقم الاوردر #${val.order_id}`,
-                                //         icon: '../<?php echo $site_setting['site-logo']; ?>'
-                                //     }
-                                // );
-                                // notify.onclick = function() {
-                                //     window.focus();
-                                //     notification.close();
-                                // };
-                                // notify.addEventListener("error", e => {
-                                //     alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
-                                // })
+                                try {
+                                    var notify = new Notification(
+                                        `لقد تم اضافة طلب جديد!`, {
+                                            body: `رقم الاوردر #${val.order_id}`,
+                                            icon: '../<?php echo $site_setting['site-logo']; ?>'
+                                        }
+                                    );
+                                    notify.onclick = function() {
+                                        window.focus();
+                                        notification.close();
+                                    };
+                                    notify.addEventListener("error", e => {
+                                        alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
+                                    })
+                                } catch (e) {
+                                    console.error("Notification error:", e);
+                                }
                             } else if (val.type == "accept") {
-                                alert("accepted")
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.html(val.order)
+                                parent.replaceWith(val.order)
                             } else if (val.type == "cancel") {
                                 var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.html(val.order)
+                                parent.replaceWith(val.order)
                             } else if (val.type == "remove") {
                                 $(`#parent > div[data-id='${val.order_id}']`).remove()
                             } else if (val.type == "emptyAll") {
