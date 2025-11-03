@@ -14,7 +14,7 @@ $get_settings_merchant = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_s
 $merchantID = mysqli_fetch_assoc($get_settings_merchant)['value'];
 
 $get_settings_api_password = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_qnb_api_password'");
-$api_password = mysqli_fetch_assoc($get_settings_secretKey)['get_settings_api_password'];
+$api_password = mysqli_fetch_assoc($get_settings_api_password)['get_settings_api_password'];
 
 // Getting Visa Tax
 $get_fixed = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_tax_fixed'");
