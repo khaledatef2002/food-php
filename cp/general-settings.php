@@ -199,24 +199,20 @@
                                         <div class="d-flex gap-1">
                                             <p class="font-weight-bold text-dark flex-fill">
                                                 <label for="visa_fixed_tax" class="font-weight-bold text-dark">Fixed Tax:</label>
-                                                <input value="<?php echo $site_setting['visa_tax_fixed']; ?>" name="visa_fixed_tax" id="visa_fixed_tax" type="number" class="form-control border px-2" placeholder="API KEY">
+                                                <input value="<?php echo $site_setting['visa_tax_fixed']; ?>" name="visa_fixed_tax" id="visa_fixed_tax" type="number" class="form-control border px-2">
                                             </p>
                                             <p class="font-weight-bold text-dark flex-fill">
                                                 <label for="visa_percent_tax" class="font-weight-bold text-dark">Percent Tax:</label>
-                                                <input value="<?php echo $site_setting['visa_tax_percent']; ?>" name="visa_percent_tax" id="visa_percent_tax" type="number" step="0.01" class="form-control border px-2" placeholder="API KEY">
+                                                <input value="<?php echo $site_setting['visa_tax_percent']; ?>" name="visa_percent_tax" id="visa_percent_tax" type="number" step="0.01" class="form-control border px-2">
                                             </p>
                                         </div>
                                         <p class="font-weight-bold text-dark">
-                                            <label for="visa_key" class="font-weight-bold text-dark">API KEY:</label>
-                                            <input value="<?php echo $site_setting['API_KEY']; ?>" name="visa_key" id="visa_key" type="text" class="form-control border px-2" placeholder="API KEY">
+                                            <label for="visa_qnb_merchant_id" class="font-weight-bold text-dark">merchant ID:</label>
+                                            <input value="<?php echo $site_setting['visa_qnb_merchant_id']; ?>" name="visa_qnb_merchant_id" id="visa_qnb_merchant_id" type="text" class="form-control border px-2" placeholder="Merchant ID">
                                         </p>
                                         <p class="font-weight-bold text-dark">
-                                            <label for="visa_id" class="font-weight-bold text-dark">merchant ID:</label>
-                                            <input value="<?php echo $site_setting['merchantID']; ?>" name="visa_id" id="visa_id" type="text" class="form-control border px-2" placeholder="Integration ID">
-                                        </p>
-                                        <p class="font-weight-bold text-dark">
-                                            <label for="visa_secret" class="font-weight-bold text-dark">Secret Key:</label>
-                                            <input value="<?php echo $site_setting['secretKey']; ?>" name="visa_secret" id="visa_secret" type="text" class="form-control border px-2" placeholder="IFRAME ID">
+                                            <label for="visa_qnb_api_password" class="font-weight-bold text-dark">Api Password:</label>
+                                            <input value="<?php echo $site_setting['visa_qnb_api_password']; ?>" name="visa_qnb_api_password" id="visa_qnb_api_password" type="text" class="form-control border px-2" placeholder="Api Password">
                                         </p>
                                     </div>
                                 </div>

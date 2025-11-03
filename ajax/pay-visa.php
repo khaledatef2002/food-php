@@ -9,14 +9,12 @@ $min_order = mysqli_fetch_assoc($get_settings_min)['value'];
 $get_settings_api_av = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_av'");
 $isAvillable = mysqli_fetch_assoc($get_settings_api_av)['value'];
 
-$get_settings_api = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='API_KEY'");
-$API_KEY = mysqli_fetch_assoc($get_settings_api)['value'];
 
-$get_settings_merchant = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='merchantID'");
+$get_settings_merchant = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_qnb_merchant_id'");
 $merchantID = mysqli_fetch_assoc($get_settings_merchant)['value'];
 
-$get_settings_secretKey = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='secretKey'");
-$secretKey = mysqli_fetch_assoc($get_settings_secretKey)['value'];
+$get_settings_api_password = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_qnb_api_password'");
+$api_password = mysqli_fetch_assoc($get_settings_secretKey)['get_settings_api_password'];
 
 // Getting Visa Tax
 $get_fixed = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_tax_fixed'");
@@ -215,7 +213,9 @@ function save_pending_order(array $data, float $visa_tax)
 
 function generatePayment($order_id, $amount)
 {
-    $url = 'https://qnbalahli.gateway.mastercard.com/api/rest/version/67/merchant/MALFOOF/session';
+    global $merchantID, $api_password;
+
+    $url = 'https://qnbalahli.gateway.mastercard.com/api/rest/version/67/merchant/'. $merchantID .'/session';
     $server = $_SERVER['SERVER_NAME'];
     $redirect_url = "https://$server/visa_payment";
     
@@ -259,7 +259,7 @@ function generatePayment($order_id, $amount)
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json'
     ]);
-    curl_setopt($ch, CURLOPT_USERPWD, 'merchant.MALFOOF:07fefbc2a09394c7b7db5d3218f15f5b'); // Basic auth
+    curl_setopt($ch, CURLOPT_USERPWD, 'merchant.'. $merchantID .':' . $api_password);
 
     // Execute the request
     $response = curl_exec($ch);
