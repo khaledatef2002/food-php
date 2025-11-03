@@ -117,6 +117,20 @@ function approve_order(id,me)
     })
 }
 
+
+function printFromUrl(url) {
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+
+  iframe.onload = function() {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+  };
+
+  iframe.src = url;
+}
+
 function cancel_button(id, me)
 {
     $("#cancel_modal").attr("data-order-id", id)

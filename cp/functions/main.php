@@ -428,6 +428,10 @@ function get_order_card(array $item): string
     $fetch = mysqli_fetch_assoc($get_settings);
     $currency = $fetch['value'];
 
+    $get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='sunmi_print'");
+    $fetch = mysqli_fetch_assoc($get_settings);
+    $sunmi_print = $fetch['value'];
+
     if ($item['marked'] == 0) {
         $mark = 'gold';
     } else if ($item['marked'] == 1) {
@@ -603,6 +607,9 @@ function get_order_card(array $item): string
         endif;
         if (check_user_perm(['live-orders-view'])) :
             $marked_button .= '<a href="show-order.php?id=' . $item['id'] . '" target="_blank"><button class="btn btn-info mx-1">عرض</button></a>';
+        endif;
+        if ($sunmi_print == '1') :
+            $marked_button .= '<button class="bg-gradient-primary btn shadow-none" onclick="printFromUrl(\'/cp/print.php?id='. $item['id'] .'\')">طــبــاعــة</button>';
         endif;
     } else {
         if (check_user_perm(['live-orders-view'])) :

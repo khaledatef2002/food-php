@@ -206,7 +206,7 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
                     <td class="text-center"><?php echo $order['tax'] . $currency; ?></td>
                 </tr>
             <?php endif; ?>
-            <?php if ($order['order_type'] == "delivery" || $order['delivery_discount'] > 0 || $order['total_discount'] > 0 || $order['tas'] > 0) : ?>
+            <?php if ($order['order_type'] == "delivery" || $order['delivery_discount'] > 0 || $order['total_discount'] > 0 || $order['tax'] > 0) : ?>
                 <tr class="border">
                     <th>المطلوب سداده</th>
                     <td class="text-center"><?php echo get_total_order_price($order['id']) + $order['tax'] + $order['address_price'] - $order['delivery_discount'] - $order['total_discount'] . $currency; ?></td>

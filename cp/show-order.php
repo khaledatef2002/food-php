@@ -39,6 +39,10 @@ if (isset($_GET['id'])) {
 $get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='currency'");
 $fetch = mysqli_fetch_assoc($get_settings);
 $currency = $fetch['value'];
+
+$get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='sunmi_print'");
+$fetch = mysqli_fetch_assoc($get_settings);
+$sunmi_print = $fetch['value'];
 ?>
 
 <body class="g-sidenav-show rtl bg-gray-200">
@@ -227,7 +231,9 @@ $currency = $fetch['value'];
                     <div class="card col-lg-6 col-12">
                         <div class="card-body py-1">
                             <div class="d-flex justify-content-center align-items-center">
-                                <button class="bg-gradient-primary btn mb-0 py-2 shadow-none" onclick="printFromUrl('/cp/print.php?id=<?php echo $item['id']; ?>')">طــبــاعــة</button>
+                                <?php if ($sunmi_print == '1') : ?>
+                                    <button class="bg-gradient-primary btn mb-0 py-2 shadow-none" onclick="printFromUrl('/cp/print.php?id=<?php echo $item['id']; ?>')">طــبــاعــة</button>
+                                <?php endif; ?>
                                 <a href="live-order.php"><button class="btn btn-default text-decoration-underline mb-0">الــعــودة</button></a>
                             </div>
                         </div>
@@ -335,19 +341,6 @@ $currency = $fetch['value'];
             var vl = $(this).parent().find("span:eq(0)").text().trim()
             navigator.clipboard.writeText(vl)
         })
-
-        function printFromUrl(url) {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            iframe.onload = function() {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-            };
-
-            iframe.src = url;
-        }
     </script>
 </body>
 
