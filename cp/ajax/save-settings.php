@@ -10,12 +10,12 @@ if (!check_user_perm(['general-settings-edit', 'general-settings-edit-visa'])) :
 endif;
 
 if (
-    (check_user_perm(['general-settings-edit-visa']) && isset($_POST['visa_fixed_tax']) && isset($_POST['visa_percent_tax']) && isset($_POST['visa_qnb_merchant_id']) && isset($_POST['visa_qnb_api_password']) && in_array($_POST['visa_av'], [0, 1])) ||
+    (check_user_perm(['general-settings-edit-visa']) && isset($_POST['visa_fixed_tax']) && isset($_POST['visa_percent_tax']) && isset($_POST['visa_qnb_merchant_id']) && isset($_POST['visa_qnb_api_password']) && in_array($_POST['visa_av'], [0, 1]) && isset($_POST['selected_payment_method_providor']) && in_array($_POST['selected_payment_method_providor'], ['qnb'])) ||
     (check_user_perm(['general-settings-edit']) && isset($_POST['dir']) && isset($_POST['lang']) && isset($_POST['time_zone']) && isset($_POST['currency']) && isset($_POST['website_name']) && isset($_POST['website_keywords']) && isset($_POST['website_description']) && isset($_POST['min_order']) && isset($_POST['website_taxs']) && in_array($_POST['order_av'], [0, 1]) && isset($_POST['order_av_reason']) && isset($_POST['time_msg']) && in_array($_POST['wh_av'], [0, 1]) && isset($_POST['wh_phone']))
 ) {
 
     if (check_user_perm(['general-settings-edit-visa'])) {
-        if ($_POST['visa_av'] == 1 && (empty($_POST['visa_qnb_merchant_id']) || empty($_POST['visa_qnb_api_password']))) {
+        if ($_POST['visa_av'] == 1 && (empty($_POST['visa_qnb_merchant_id']) || empty($_POST['visa_qnb_api_password'])) || empty($_POST['selected_payment_method_providor']) || !in_array($_POST['selected_payment_method_providor'], ['qnb'])) {
             // empty number
             echo json_encode([
                 'res' => 'error',
@@ -29,12 +29,14 @@ if (
         $visa_api_password = mysqli_real_escape_string($GLOBALS['conn'], $_POST['visa_qnb_api_password']);
         $visa_percent_tax = mysqli_real_escape_string($GLOBALS['conn'], $_POST['visa_percent_tax']);
         $visa_fixed_tax = mysqli_real_escape_string($GLOBALS['conn'], $_POST['visa_fixed_tax']);
+        $selected_payment_method_providor = mysqli_real_escape_string($GLOBALS['conn'], $_POST['selected_payment_method_providor']);
 
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_av' WHERE title='visa_av'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_merchant_id' WHERE title='visa_qnb_merchant_id'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_api_password' WHERE title='visa_qnb_api_password'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_percent_tax' WHERE title='visa_tax_percent'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_fixed_tax' WHERE title='visa_tax_fixed'");
+        $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$selected_payment_method_providor' WHERE title='selected_payment_method_providor'");
     }
     if (check_user_perm(['general-settings-edit'])) {
         if (!empty($_POST['website_name']) || !empty($_POST['website_keywords']) || !empty($_POST['website_description']) || !empty($_POST['time_msg'])) {

@@ -207,6 +207,12 @@
                                             </p>
                                         </div>
                                         <p class="font-weight-bold text-dark">
+                                            <label for="selected_payment_method_providor" class="font-weight-bold text-dark">مقدم الخدمة:</label>
+                                            <select name="selected_payment_method_providor" id="selected_payment_method_providor" class="form-select">
+                                                <option value="qnb" <?php echo ($site_setting['selected_payment_method_providor'] == 'qnb') ? 'selected' : ''; ?>>QNB</option>
+                                            </select>
+                                        </p>
+                                        <p class="font-weight-bold text-dark">
                                             <label for="visa_qnb_merchant_id" class="font-weight-bold text-dark">merchant ID:</label>
                                             <input value="<?php echo $site_setting['visa_qnb_merchant_id']; ?>" name="visa_qnb_merchant_id" id="visa_qnb_merchant_id" type="text" class="form-control border px-2" placeholder="Merchant ID">
                                         </p>
