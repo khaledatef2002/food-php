@@ -12,3 +12,9 @@ ALTER TABLE `visa_orders_req` ADD `visa_providor` VARCHAR(255) NOT NULL AFTER `t
 UPDATE `visa_orders_req` SET `visa_providor`='qnb';
 
 ALTER TABLE `food_orders` CHANGE `transaction_id` `transaction_id` VARCHAR(225) NOT NULL;
+
+
+ALTER TABLE food_orders ADD INDEX idx_ordered_marked (ordered_date, marked);
+-- Adding LIMIT
+
+INSERT INTO `website_settings` (`id`, `title`, `value`) VALUES (NULL, 'paymob_hmac', ''), (NULL, 'paymob_secret_key', ''), (NULL, 'paymob_public_key', ''), (NULL, 'paymob_integration_id', '');

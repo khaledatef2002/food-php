@@ -57,6 +57,16 @@
               </a>
             </li>
           <?php endif; ?>
+          <?php if (check_user_perm(['general-settings-view-visa'])) : ?>
+            <li class="nav-item">
+              <a class="nav-link py-2 <?php echo ($currentPage == 'general-settings-view-visa') ? 'active bg-gradient-primary' : ''; ?>" href="visa-settings.php">
+                <div class="text-white text-center ms-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-credit-card"></i>
+                </div>
+                <span class="nav-link-text me-1">اعدادات الدفع</span>
+              </a>
+            </li>
+          <?php endif; ?>
           <?php if (check_user_perm(['colors-settings-view'])) : ?>
             <li class="nav-item">
               <a class="nav-link py-2 <?php echo ($currentPage == 'colors-settings.php') ? 'active bg-gradient-primary' : ''; ?>" href="colors-settings.php">
