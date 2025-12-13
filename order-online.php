@@ -217,10 +217,12 @@
         </div>
         <div class="modal-footer" style="text-align: center;display: flex;flex-direction: row;padding: 7px 5px;justify-content: center;column-gap: 5px;">
           <button data-bs-dismiss="modal" class=" d-flex justify-content-center align-items-center" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('close'); ?></button>
-          <button class="spinner-button-loading d-flex justify-content-center align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 16px;border: 0;flex: 1;">
-            <span class="content-button-loading"><?php echo __('add'); ?></span>
-            <div class="lds-dual-ring"></div>
-          </button>
+          <?php if (is_work() && !is_disabled()): ?>
+            <button id="add_item_button" class="spinner-button-loading d-flex justify-content-center align-items-center" style="background: var(--button-back);color: var(--button-color);border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;font-weight: bold;font-size: 16px;border: 0;flex: 1;">
+              <span class="content-button-loading"><?php echo __('add'); ?></span>
+              <div class="lds-dual-ring"></div>
+            </button>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -491,8 +493,13 @@
     var lang = <?php echo json_encode(include 'language/'. $site_setting['lang'] .'.php'); ?>;
   </script>
   <?php include 'temps/jslibs.php'; ?>
+  <?php if ($site_setting['selected_payment_method_providor'] === "qnb"): ?>
+    <script src="payments/qnb/main.js"></script>
+    <script src="https://qnbalahli.gateway.mastercard.com/static/checkout/checkout.min.js"></script>
+  <?php elseif ($site_setting['selected_payment_method_providor'] === "paymob"): ?>
+    <script src="payments/paymob/main.js"></script>
+  <?php endif; ?>
   <script src="js/order-online.js"></script>
-  <script src="https://qnbalahli.gateway.mastercard.com/static/checkout/checkout.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
   <script>
     $(document).ready(function() {

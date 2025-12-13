@@ -256,8 +256,8 @@ function open_item(id, me)
   item_info.show();
 }
 
-$("#item_info button:last-of-type").click(function(){
-  $("#item_info button:last-of-type").prop("disabled", true)
+$("#item_info #add_item_button").click(function(){
+  $("#item_info #add_item_button").prop("disabled", true)
   var id = $("#item_info").attr("data-id")
   var current_count = parseInt($("#item_info").find("div:last-of-type .count").text())
 
@@ -335,6 +335,7 @@ $("#item_info button:last-of-type").click(function(){
     size_id: size_id,
     options: options
   }
+  // check working period also
   $.post("ajax/add_item_cart.php", {data:data}, function(result){
     var data = JSON.parse(result)
     $(".order-footer").find("span.count").text(data.count)
@@ -795,14 +796,7 @@ $("#final_info button:last-of-type").click(async function(){
           var res = JSON.parse(res);
           if(res.res == "success")
           {
-            sessionStorage.clear()
-              Checkout.configure({
-              session: {
-                  id: res.session_id
-              }
-            })
-
-            Checkout.showPaymentPage();
+            start_payment(res)
           }
           else
           {

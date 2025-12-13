@@ -19,7 +19,7 @@ if (
     isset($_POST['visa_qnb_api_password']) &&
     isset($_POST['paymob_hmac']) &&
     isset($_POST['paymob_secret_key']) &&
-    isset($_POST['paymob_public_key']) &&
+    isset($_POST['paymob_iframe_id']) &&
     isset($_POST['paymob_integration_id'])
 ) {
 
@@ -31,7 +31,7 @@ if (
     $visa_qnb_api_password = mysqli_real_escape_string($GLOBALS['conn'], $_POST['visa_qnb_api_password']);
     $paymob_hmac = mysqli_real_escape_string($GLOBALS['conn'], $_POST['paymob_hmac']);
     $paymob_secret_key = mysqli_real_escape_string($GLOBALS['conn'], $_POST['paymob_secret_key']);
-    $paymob_public_key = mysqli_real_escape_string($GLOBALS['conn'], $_POST['paymob_public_key']);
+    $paymob_iframe_id = mysqli_real_escape_string($GLOBALS['conn'], $_POST['paymob_iframe_id']);
     $paymob_integration_id = mysqli_real_escape_string($GLOBALS['conn'], $_POST['paymob_integration_id']);
     
     $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_av' WHERE title='visa_av'");
@@ -42,7 +42,7 @@ if (
     $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$visa_qnb_api_password' WHERE title='visa_qnb_api_password'");
     $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$paymob_hmac' WHERE title='paymob_hmac'");
     $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$paymob_secret_key' WHERE title='paymob_secret_key'");
-    $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$paymob_public_key' WHERE title='paymob_public_key'");
+    $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$paymob_iframe_id' WHERE title='paymob_iframe_id'");
     $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$paymob_integration_id' WHERE title='paymob_integration_id'");
 
     $admin = get_admin_info()['nickname'];

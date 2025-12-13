@@ -555,31 +555,39 @@ function __(string $key)
 
 function save_visa_order($order)
 {
-    $get_order_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE operation_id='" . $order . "' AND status = 0");
+    $get_order_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE operation_id='" . $order . "'");
     if (mysqli_num_rows($get_order_data) > 0) {
         $order_data = mysqli_fetch_assoc($get_order_data);
+        if($order_data['status'] == 0){
+            $date = time();
 
-        $date = time();
+            $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch, order_type, client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount, method, transaction_id, paid, tax, total_order, visa_providor) VALUES ('" . $order_data['client_name'] . "','" . $order_data['client_phone'] . "','" . $order_data['client_branch_id'] . "','" . $order_data['client_branch'] . "', '". $order_data['order_type'] ."' ,'" . $order_data['client_area_id'] . "','" . $order_data['client_area_name'] . "','" . $order_data['client_address'] . "','" . $order_data['address_price'] . "','" . $order_data['client_notice'] . "','" . $date . "','" . $order_data['discount_id'] . "','" . $order_data['discount_code'] . "','" . $order_data['discount_name'] . "','" . $order_data['delivery_discount'] . "','" . $order_data['total_discount'] . "',1,'" . $order_data['operation_id'] . "','" . $order_data['total_order'] . "', '". $order_data['tax'] ."', '" . $order_data['total_order'] . "', '". $order_data['visa_providor'] ."')");
+            $order_id = mysqli_insert_id($GLOBALS['conn']);
+            http_response_code(200);
+            $notify = mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'add', '$order_id')");
 
-        $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch, order_type, client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount, method, transaction_id, paid, tax, total_order, visa_providor) VALUES ('" . $order_data['client_name'] . "','" . $order_data['client_phone'] . "','" . $order_data['client_branch_id'] . "','" . $order_data['client_branch'] . "', '". $order_data['order_type'] ."' ,'" . $order_data['client_area_id'] . "','" . $order_data['client_area_name'] . "','" . $order_data['client_address'] . "','" . $order_data['address_price'] . "','" . $order_data['client_notice'] . "','" . $date . "','" . $order_data['discount_id'] . "','" . $order_data['discount_code'] . "','" . $order_data['discount_name'] . "','" . $order_data['delivery_discount'] . "','" . $order_data['total_discount'] . "',1,'" . $order_data['operation_id'] . "','" . $order_data['total_order'] . "', '". $order_data['tax'] ."', '" . $order_data['total_order'] . "', '". $order_data['visa_providor'] ."')");
-        $order_id = mysqli_insert_id($GLOBALS['conn']);
-        http_response_code(200);
-        $notify = mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'add', '$order_id')");
+            $get_cart_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_cart_req WHERE order_id='" . $order_data['id'] . "'");
+            while ($cart_data = mysqli_fetch_assoc($get_cart_data)) {
+                $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name) VALUES('" . $order_id . "','" . $cart_data['item_id'] . "','" . $cart_data['item_name'] . "','" . $cart_data['item_count'] . "','" . $cart_data['item_price'] . "','" . $cart_data['item_size'] . "','" . $cart_data['item_size_name'] . "')");
 
-        $get_cart_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_cart_req WHERE order_id='" . $order_data['id'] . "'");
-        while ($cart_data = mysqli_fetch_assoc($get_cart_data)) {
-            $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name) VALUES('" . $order_id . "','" . $cart_data['item_id'] . "','" . $cart_data['item_name'] . "','" . $cart_data['item_count'] . "','" . $cart_data['item_price'] . "','" . $cart_data['item_size'] . "','" . $cart_data['item_size_name'] . "')");
+                $order_card_id = mysqli_insert_id($GLOBALS['conn']);
 
-            $order_card_id = mysqli_insert_id($GLOBALS['conn']);
-
-            $get_options_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_options_req WHERE order_card_id='" . $cart_data['id'] . "'");
-            while ($options_data = mysqli_fetch_assoc($get_options_data)) {
-                $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_options(order_card_id, option_id, option_value_id, option_name, option_value, option_price) VALUES('" . $order_card_id . "','" . $options_data['option_id'] . "','" . $options_data['option_value_id'] . "','" . $options_data['option_name'] . "','" . $options_data['option_value'] . "','" . $options_data['option_price'] . "')");
+                $get_options_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_options_req WHERE order_card_id='" . $cart_data['id'] . "'");
+                while ($options_data = mysqli_fetch_assoc($get_options_data)) {
+                    $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_options(order_card_id, option_id, option_value_id, option_name, option_value, option_price) VALUES('" . $order_card_id . "','" . $options_data['option_id'] . "','" . $options_data['option_value_id'] . "','" . $options_data['option_name'] . "','" . $options_data['option_value'] . "','" . $options_data['option_price'] . "')");
+                }
             }
-        }
 
-        mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET status = 1 WHERE operation_id='" . $order . "'");
+            mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET status = 1 WHERE operation_id='" . $order . "'");
+            return $order_id;
+        } else {
+            $get_order = mysqli_query($GLOBALS['conn'], "SELECT id FROM food_orders WHERE transaction_id='" . $order . "'");
+            $id = mysqli_fetch_assoc($get_order)['id'];
+            return $id;
+        }
     }
+
+    return -1;
 }
 
 function generate_uuid()
@@ -602,4 +610,139 @@ function generate_uuid()
         $rand2,
         $rand4
     );
+}
+
+
+function generate_order_whatsapp_message($order_id) 
+{
+    global $site_setting, $lang;
+    __('name');
+    $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
+    $order_from_branch = mysqli_fetch_assoc($order_from_branch);
+
+    $get_order_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE id = '" . $order_id . "'");
+    $order_data = mysqli_fetch_assoc($get_order_data);
+
+    $branches = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches");
+    $branches_count = mysqli_num_rows($branches);
+
+    $msg_header = <<<MSG
+        {$lang['order_approved']} #{$order_id}
+        ----------------
+        {$lang['name']}: {$order_data['client_name']}
+        {$lang['phone']}: {$order_data['client_phone']}
+        MSG;
+
+    if ($order_from_branch['value'] == 1 || $order_data['order_type'] == 'branch') {
+    $order_type = $order_data['order_type'] == 'branch' ? "استلام من الفرع" : "توصيل للمنزل";
+    $msg_header .= <<<MSG
+
+        نوع الطلب: {$order_type}
+        MSG;
+    }
+
+    $msg_order_det = <<<MSG
+    {$lang['payment_method']}: {$lang['payment_with_visa']}
+    MSG;
+
+    if ($branches_count > 1) {
+    $msg_header .= <<<MSG
+
+        الفرع: {$order_data['client_branch']}
+        MSG;
+    }
+
+    $msg_header .= <<<MSG
+
+        {$lang['area']}: {$order_data['client_area_name']}
+        {$lang['address']}: {$order_data['client_address']}
+        {$lang['payment_method']}: {$lang['payment_with_visa']}
+        MSG;
+
+
+    $msg_order_det_header = <<<MSG
+
+        ----------------
+        {$lang['order_details']}
+        ----------------
+        MSG;
+
+    $msg_order_det = "";
+    $get_cart_det = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart WHERE order_id='" . $order_id . "'");
+    while ($cart = mysqli_fetch_assoc($get_cart_det)) {
+    $item_price = $cart['item_price'] * $cart['item_count'];
+    $det = <<<MSG
+        
+            {$cart['item_count']} × {$cart['item_name']} - {$item_price}
+        MSG;
+
+    if (!empty($cart['item_size_name'])) {
+        $det .= <<<MSG
+
+                - {$lang['size']}: {$cart['item_size_name']}
+            MSG;
+    }
+
+    $get_options_titles = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT(option_id), option_name FROM food_order_options WHERE order_card_id='" . $cart['id'] . "'");
+
+    while ($option = mysqli_fetch_assoc($get_options_titles)) {
+        $det .= <<<MSG
+
+                - {$option['option_name']}:
+            MSG;
+
+        $get_values = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_options WHERE option_id='" . $option['option_id'] . "' AND order_card_id='" . $cart['id'] . "'");
+        while ($value = mysqli_fetch_assoc($get_values)) {
+        $price = $cart['item_count'] * $value['option_price'];
+        $price_det = ($price > 0) ? '  -  ' . $price . ' ' . $site_setting['currency'] : '';
+        $det .= <<<MSG
+
+                    {$cart['item_count']} × {$value['option_value']} {$price_det}
+            MSG;
+        }
+    }
+
+    $msg_order_det .= $det;
+    }
+
+
+    $total_disc = "";
+    $del_disc   = "";
+    if ($order_data['total_discount'] > 0) {
+    $total_disc = <<<MSG
+            {$lang['order_discount']}: {$order_data['total_discount']}
+        MSG;
+    }
+    if ($order_data['order_type'] == 'branch' && $order_data['delivery_discount'] > 0) {
+    $del_disc = <<<MSG
+            {$lang['delivery_discount']}: {$order_data['delivery_discount']}
+        MSG;
+    }
+
+    $total_order = get_total_order_price($order_id);
+    if($order_data['order_type'] == 'branch') {
+    $order_data['address_price'] = 0;
+    }
+    $final_total = $total_order + $order_data['address_price'] - $order_data['total_discount'] - $order_data['delivery_discount'] + $order_data['tax'];
+    $msg_footer = <<<MSG
+
+        ----------------
+        {$lang['pay_info']}
+        ----------------
+        {$lang['sum']}: {$total_order} {$site_setting['currency']}{$total_disc}
+        MSG;
+    if($order_data['order_type'] == 'delivery') {
+        $msg_footer .= <<<MSG
+
+        {$lang['delivery']}: {$order_data['address_price']} {$site_setting['currency']}{$del_disc}
+        MSG;
+    }
+    $msg_footer .= <<<MSG
+
+        {$lang['tax']}: {$order_data['tax']}
+        {$lang['total_cost']}: {$final_total} {$site_setting['currency']}
+        تم السداد
+        MSG;
+
+    return $msg_header . $msg_order_det_header . $msg_order_det . $msg_footer;
 }

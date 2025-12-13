@@ -52,11 +52,11 @@
                     $thisMonthStart = strtotime('first day of this month midnight');
                     $thisDayStart = strtotime('midnight today');
 
-                    $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) FROM food_orders WHERE marked=1 AND ordered_date >= '$thisMonthStart'");
-                    $getSuccessOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) FROM food_orders WHERE marked=1 AND ordered_date >= '$thisDayStart'");
+                    $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) AS sum FROM food_orders WHERE marked=1 AND ordered_date >= '$thisMonthStart'");
+                    $getSuccessOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT SUM(total_order) AS sum FROM food_orders WHERE marked=1 AND ordered_date >= '$thisDayStart'");
 
-                    $earnAll = mysqli_fetch_assoc($getSuccessOrders)['SUM(total_order)'];
-                    $earnToday = mysqli_fetch_assoc($getSuccessOrdersToday)['SUM(total_order)'];
+                    $earnAll = mysqli_fetch_assoc($getSuccessOrders)['sum'];
+                    $earnToday = mysqli_fetch_assoc($getSuccessOrdersToday)['sum'];
 
                     echo number_format($earnAll) . "$";
                     ?>
@@ -81,8 +81,9 @@
                   <p class="text-sm mb-0 text-capitalize">إجمالي الاوردرات</p>
                   <h4 class="mb-0">
                     <?php
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM food_orders");
+                    $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                    echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -90,16 +91,25 @@
               <hr class="dark horizontal my-0">
               <div class="card-footer p-3 d-flex justify-content-evenly">
                 <p class="mb-0 text-start">
-                  <?php $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE marked=1"); ?>
-                  <span class="badge bg-gradient-success">مقبول: <?php echo number_format(mysqli_num_rows($getSuccessOrders)); ?></span>
+                  <?php 
+                    $getSuccessOrders = mysqli_query($GLOBALS['conn'], "SELECT count(*) AS count FROM food_orders WHERE marked=1"); 
+                    $successOrders = mysqli_fetch_assoc($getSuccessOrders)['count'];
+                  ?>
+                  <span class="badge bg-gradient-success">مقبول: <?php echo number_format($successOrders); ?></span>
                 </p>
                 <p class="mb-0 text-start">
-                  <?php $getCanceledOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE marked=2"); ?>
-                  <span class="badge bg-gradient-danger">ملغي: <?php echo number_format(mysqli_num_rows($getCanceledOrders)); ?></span>
+                  <?php 
+                    $getCanceledOrders = mysqli_query($GLOBALS['conn'], "SELECT count(*) AS count FROM food_orders WHERE marked=2"); 
+                    $canceledOrders = mysqli_fetch_assoc($getCanceledOrders)['count'];
+                  ?>
+                  <span class="badge bg-gradient-danger">ملغي: <?php echo number_format($canceledOrders); ?></span>
                 </p>
                 <p class="mb-0 text-start">
-                  <?php $getWaitingOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE marked=0"); ?>
-                  <span class="badge bg-gradient-warning">انتظار: <?php echo number_format(mysqli_num_rows($getWaitingOrders)); ?></span>
+                  <?php 
+                    $getWaitingOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM food_orders WHERE marked=0"); 
+                    $waitingOrders = mysqli_fetch_assoc($getWaitingOrders)['count'];
+                  ?>
+                  <span class="badge bg-gradient-warning">انتظار: <?php echo number_format($waitingOrders); ?></span>
                 </p>
               </div>
             </div>
@@ -114,8 +124,9 @@
                   <p class="text-sm mb-0 text-capitalize">إجمالي العملاء</p>
                   <h4 class="mb-0">
                     <?php
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT client_phone FROM food_orders");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                      $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT client_phone) AS count FROM food_orders");
+                      $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                      echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -124,16 +135,22 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-start d-flex justify-content-evenly">
                   <?php
-                  $thisMonthStart = strtotime('first day of this month');
-                  $thisYearStart = strtotime('first day of January this year');
-                  $thisDay = strtotime('midnight today');
-                  $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders GROUP BY client_phone having ordered_date >='$thisMonthStart' ORDER BY id DESC");
-                  $getTotalOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders  GROUP BY client_phone having ordered_date >='$thisDay' ORDER BY id DESC");
-                  $getTotalOrdersYear = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders GROUP BY client_phone having ordered_date >='$thisYearStart' ORDER BY id DESC");
+                    $thisMonthStart = strtotime('first day of this month');
+                    $thisYearStart = strtotime('first day of January this year');
+                    $thisDay = strtotime('midnight today');
+                    
+                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT count(DISTINCT client_phone) AS count FROM food_orders WHERE ordered_date >='$thisMonthStart'");
+                    $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+
+                    $getTotalOrdersToday = mysqli_query($GLOBALS['conn'], "SELECT count(DISTINCT client_phone) AS count FROM food_orders  WHERE ordered_date >='$thisDay'");
+                    $totalOrdersToday = mysqli_fetch_assoc($getTotalOrdersToday)['count'];
+                    
+                    $getTotalOrdersYear = mysqli_query($GLOBALS['conn'], "SELECT count(DISTINCT client_phone) AS count FROM food_orders WHERE ordered_date >='$thisYearStart'");
+                    $totalOrdersYear = mysqli_fetch_assoc($getTotalOrdersYear)['count'];
                   ?>
-                  <span class="badge bg-gradient-warning">هذه السنة: <?php echo number_format(mysqli_num_rows($getTotalOrdersYear)); ?></span>
-                  <span class="badge bg-gradient-primary">هذا الشهر: <?php echo number_format(mysqli_num_rows($getTotalOrders)); ?></span>
-                  <span class="badge bg-gradient-success">هذا اليوم: <?php echo number_format(mysqli_num_rows($getTotalOrdersToday)); ?></span>
+                  <span class="badge bg-gradient-warning">هذه السنة: <?php echo number_format($totalOrdersYear); ?></span>
+                  <span class="badge bg-gradient-primary">هذا الشهر: <?php echo number_format($totalOrders); ?></span>
+                  <span class="badge bg-gradient-success">هذا اليوم: <?php echo number_format($totalOrdersToday); ?></span>
                 </p>
               </div>
             </div>
@@ -149,8 +166,9 @@
                   <p class="text-sm mb-0 text-capitalize">زيارات الموقع (طوال الوقت)</p>
                   <h4 class="mb-0">
                     <?php
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                      $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits");
+                      $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                      echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -159,10 +177,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits");
-                  $visits = number_format(mysqli_num_rows($visits));
+                    $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits");
+                    $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>
@@ -177,9 +195,10 @@
                   <p class="text-sm mb-0 text-capitalize">زيارات الموقع (طوال الشهر)</p>
                   <h4 class="mb-0">
                     <?php
-                    $d = date("Y-m-d H:i:s", strtotime("first day of this month"));
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits WHERE created_at > '$d'");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                      $d = date("Y-m-d H:i:s", strtotime("first day of this month"));
+                      $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits WHERE created_at > '$d'");
+                      $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                      echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -188,10 +207,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits WHERE created_at > '$d'");
-                  $visits = number_format(mysqli_num_rows($visits));
+                    $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits WHERE created_at > '$d'");
+                    $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>
@@ -206,9 +225,10 @@
                   <p class="text-sm mb-0 text-capitalize">زيارات الموقع (طوال السنة)</p>
                   <h4 class="mb-0">
                     <?php
-                    $d = date("Y-m-d H:i:s", strtotime("first day on january this year"));
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits WHERE created_at > '$d'");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                      $d = date("Y-m-d H:i:s", strtotime("first day on january this year"));
+                      $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits WHERE created_at > '$d'");
+                      $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                      echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -217,10 +237,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits WHERE created_at > '$d'");
-                  $visits = number_format(mysqli_num_rows($visits));
+                    $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits WHERE created_at > '$d'");
+                    $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>
@@ -236,8 +256,9 @@
                   <p class="text-sm mb-0 text-capitalize">زيارات المنيو (طوال الوقت)</p>
                   <h4 class="mb-0">
                     <?php
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits WHERE page='menu'");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits WHERE page='menu'");
+                    $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                    echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -246,10 +267,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits WHERE page='menu'");
-                  $visits = number_format(mysqli_num_rows($visits));
+                    $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits WHERE page='menu'");
+                    $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>
@@ -264,9 +285,10 @@
                   <p class="text-sm mb-0 text-capitalize">زيارات المنيو (طوال الشهر)</p>
                   <h4 class="mb-0">
                     <?php
-                    $d = date("Y-m-d H:i:s", strtotime("first day of this month"));
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits WHERE page='menu' AND created_at > '$d'");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                      $d = date("Y-m-d H:i:s", strtotime("first day of this month"));
+                      $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits WHERE page='menu' AND created_at > '$d'");
+                      $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                      echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -275,10 +297,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits WHERE page='menu' AND created_at > '$d'");
-                  $visits = number_format(mysqli_num_rows($visits));
+                    $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits WHERE page='menu' AND created_at > '$d'");
+                    $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>
@@ -294,8 +316,9 @@
                   <h4 class="mb-0">
                     <?php
                     $d = date("Y-m-d H:i:s", strtotime("first day on january this year"));
-                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT * FROM visits WHERE page='menu' AND created_at > '$d'");
-                    echo number_format(mysqli_num_rows($getTotalOrders));
+                    $getTotalOrders = mysqli_query($GLOBALS['conn'], "SELECT COUNT(*) AS count FROM visits WHERE page='menu' AND created_at > '$d'");
+                    $totalOrders = mysqli_fetch_assoc($getTotalOrders)['count'];
+                    echo number_format($totalOrders);
                     ?>
                   </h4>
                 </div>
@@ -304,10 +327,10 @@
               <div class="card-footer p-3">
                 <p class="mb-0 text-end">
                   <?php
-                  $visits = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT ip FROM visits WHERE page='menu' AND created_at > '$d'");
-                  $visits = number_format(mysqli_num_rows($visits));
+                  $visits = mysqli_query($GLOBALS['conn'], "SELECT COUNT(DISTINCT ip) AS count FROM visits WHERE page='menu' AND created_at > '$d'");
+                  $totalVisits = number_format(mysqli_fetch_assoc($visits)['count']);
                   ?>
-                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $visits; ?></span>
+                  <span class="badge bg-gradient-primary">عدد الزائرين: <?php echo $totalVisits; ?></span>
                 </p>
               </div>
             </div>

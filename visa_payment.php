@@ -1,5 +1,14 @@
 <?php include "temps/settings.php"; ?>
 <?php include "includes/functions.php"; ?>
+<?php
+  $get_payment_provider = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='selected_payment_method_providor'");
+  $payment_provider = mysqli_fetch_assoc($get_payment_provider)['value'];
+  if ( $payment_provider === 'qnb') {
+    include "payments/qnb/functions.php";
+  } else if ( $payment_provider === 'paymob') {
+    include "payments/paymob/functions.php";
+  }
+?>
 <!DOCTYPE html>
 <html lang="<?php echo $site_setting['lang']; ?>" dir="<?php echo $site_setting['dir']; ?>">
 
@@ -11,170 +20,39 @@
 <body>
   <?php include "temps/header.php"; ?>
   <?php
-  $success = false;
+    $success = false;
 
-  $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
-  $order_from_branch = mysqli_fetch_assoc($order_from_branch);
-
-  $branches = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches");
-  $branches_count = mysqli_num_rows($branches);
-
-  __('name');
-
-  if (isset($_GET['resultIndicator']))
-  { 
-    $order = $_GET['resultIndicator']; // e10bcfecd3724f1a
-    $get_order_det = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE operation_id = '" . $order . "' AND status = 0");
-    
-    if (mysqli_num_rows($get_order_det) > 0) {
-      save_visa_order($order);
-      $success = true;
-      $fetch = mysqli_fetch_assoc($get_order_det);
-
-      $get_id = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE transaction_id='" . $order . "'");
-      $order_data = mysqli_fetch_assoc($get_id);
-      $id = $order_data['id'];
-
-      $get_wh = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='wh_order'");
-      $wh = mysqli_fetch_assoc($get_wh)['value'];
-
-      $msg_header = <<<MSG
-          {$lang['order_approved']} #{$id}
-          ----------------
-          {$lang['name']}: {$fetch['client_name']}
-          {$lang['phone']}: {$fetch['client_phone']}
-          MSG;
-
-      if ($order_from_branch['value'] == 1 || $order_data['order_type'] == 'branch') {
-        $order_type = $order_data['order_type'] == 'branch' ? "استلام من الفرع" : "توصيل للمنزل";
-        $msg_header .= <<<MSG
-        
-          نوع الطلب: {$order_type}
-          MSG;
+    $orderIndicator;
+    if($payment_provider == 'qnb') {
+      if (isset($_GET['resultIndicator'])) {
+        $orderIndicator = $_GET['resultIndicator'];
       }
-
-      $msg_order_det = <<<MSG
-        {$lang['payment_method']}: {$lang['payment_with_visa']}
-        MSG;
-
-      if ($branches_count > 1) {
-        $msg_header .= <<<MSG
-        
-          الفرع: {$order_data['client_branch']}
-          MSG;
-      }
-
-      $msg_header .= <<<MSG
-      
-          {$lang['area']}: {$fetch['client_area_name']}
-          {$lang['address']}: {$fetch['client_address']}
-          {$lang['payment_method']}: {$lang['payment_with_visa']}
-          MSG;
-
-
-      $msg_order_det_header = <<<MSG
-
-          ----------------
-          {$lang['order_details']}
-          ----------------
-          MSG;
-
-      $msg_order_det = "";
-      $get_cart_det = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart WHERE order_id='" . $id . "'");
-      while ($cart = mysqli_fetch_assoc($get_cart_det)) {
-        $item_price = $cart['item_price'] * $cart['item_count'];
-        $det = <<<MSG
-            
-              {$cart['item_count']} × {$cart['item_name']} - {$item_price}
-            MSG;
-
-        if (!empty($cart['item_size_name'])) {
-          $det .= <<<MSG
-
-                  - {$lang['size']}: {$cart['item_size_name']}
-              MSG;
-        }
-
-        $get_options_titles = mysqli_query($GLOBALS['conn'], "SELECT DISTINCT(option_id), option_name FROM food_order_options WHERE order_card_id='" . $cart['id'] . "'");
-        echo mysqli_num_rows($get_options_titles);
-        while ($option = mysqli_fetch_assoc($get_options_titles)) {
-          $det .= <<<MSG
-
-                  - {$option['option_name']}:
-              MSG;
-
-          $get_values = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_options WHERE option_id='" . $option['option_id'] . "' AND order_card_id='" . $cart['id'] . "'");
-          while ($value = mysqli_fetch_assoc($get_values)) {
-            $price = $cart['item_count'] * $value['option_price'];
-            $price_det = ($price > 0) ? '  -  ' . $price . ' ' . $site_setting['currency'] : '';
-            $det .= <<<MSG
-
-                      {$cart['item_count']} × {$value['option_value']} {$price_det}
-                MSG;
-          }
-        }
-
-        $msg_order_det .= $det;
-      }
-
-
-      $total_disc = "";
-      $del_disc   = "";
-      if ($order_data['total_discount'] > 0) {
-        $total_disc = <<<MSG
-              {$lang['order_discount']}: {$order_data['total_discount']}
-            MSG;
-      }
-      if ($order_data['order_type'] == 'branch' && $order_data['delivery_discount'] > 0) {
-        $del_disc = <<<MSG
-              {$lang['delivery_discount']}: {$order_data['delivery_discount']}
-            MSG;
-      }
-
-      $total_order = get_total_order_price($id);
-      if($order_data['order_type'] == 'branch') {
-        $order_data['address_price'] = 0;
-      }
-      $final_total = $total_order + $order_data['address_price'] - $order_data['total_discount'] - $order_data['delivery_discount'] + $order_data['tax'];
-      $msg_footer = <<<MSG
-
-          ----------------
-          {$lang['pay_info']}
-          ----------------
-          {$lang['sum']}: {$total_order} {$site_setting['currency']}{$total_disc}
-          MSG;
-      if($order_data['order_type'] == 'delivery') {
-          $msg_footer .= <<<MSG
-
-          {$lang['delivery']}: {$order_data['address_price']} {$site_setting['currency']}{$del_disc}
-          MSG;
-      }
-      $msg_footer .= <<<MSG
-
-          {$lang['tax']}: {$order_data['tax']}
-          {$lang['total_cost']}: {$final_total} {$site_setting['currency']}
-          تم السداد
-          MSG;
-
-      $msg = $msg_header . $msg_order_det_header . $msg_order_det . $msg_footer;
-  ?>
-
-      <?php if ($site_setting['wh_av']) { ?>
-        <script>
-          setInterval(() => {
-            if (parseInt($('.counter').text()) > 0) {
-              $('.counter').text(parseInt($('.counter').text()) - 1)
-            }
-          }, 1000);
-          setTimeout(() => {
-            location.href = '<?php echo 'https://wa.me/' . $wh . '?text=' . urlencode($msg); ?>'
-          }, 6000);
-        </script>
-      <?php } ?>
-  <?php
+    } else if ($payment_provider == 'paymob') {
+      $success = validate_redirect_payment_response($_GET) && $_GET['success'] == 'true';
+      $orderIndicator = $_GET['order'];
     }
-  }
+
+    $order_id = save_visa_order($orderIndicator);
+    $success = $order_id != -1;
+
+    $get_wh = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='wh_order'");
+    $wh = mysqli_fetch_assoc($get_wh)['value'];
+    if ($success && $site_setting['wh_av']):
+      $msg = generate_order_whatsapp_message($order_id);
   ?>
+    <script>
+      setInterval(() => {
+        if (parseInt($('.counter').text()) > 0) {
+          $('.counter').text(parseInt($('.counter').text()) - 1)
+        }
+      }, 1000);
+
+      setTimeout(() => {
+        location.href = '<?php echo 'https://wa.me/' . $wh . '?text=' . urlencode($msg); ?>'
+      }, 6000);
+    </script>
+  <?php endif; ?>
+
   <div class="sections order-page col-lg-8 col-12 mx-auto">
     <div class="row col-lg-10 col-md-10 col-sm-10 col-12 mx-auto">
       <div class="item soon">

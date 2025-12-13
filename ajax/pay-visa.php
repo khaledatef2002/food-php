@@ -3,28 +3,30 @@
 include '../includes/conn.php';
 include '../includes/functions.php';
 
-$get_settings_min = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_min'");
-$min_order = mysqli_fetch_assoc($get_settings_min)['value'];
-
 $get_settings_api_av = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_av'");
 $isAvillable = mysqli_fetch_assoc($get_settings_api_av)['value'];
 
+if ($isAvillable == 0) {
+    exit;
+}
 
-$get_settings_merchant = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_qnb_merchant_id'");
-$merchantID = mysqli_fetch_assoc($get_settings_merchant)['value'];
+$get_settings_min = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_min'");
+$min_order = mysqli_fetch_assoc($get_settings_min)['value'];
 
-$get_settings_api_password = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_qnb_api_password'");
-$api_password = mysqli_fetch_assoc($get_settings_api_password)['value'];
-
-// Getting Visa Tax
 $get_fixed = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_tax_fixed'");
 $visa_fixed_tax = mysqli_fetch_assoc($get_fixed)['value'];
 
 $get_percent = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='visa_tax_percent'");
 $visa_percent_tax = mysqli_fetch_assoc($get_percent)['value'];
 
+$getPaymentProvider = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='selected_payment_method_providor'");
+$paymentProvider = mysqli_fetch_assoc($getPaymentProvider)['value'];
 
-if ($isAvillable == 0) {
+if ($paymentProvider == 'qnb') {
+    include '../payments/qnb/functions.php';
+} else if ($paymentProvider == 'paymob') {
+    include '../payments/paymob/functions.php';
+} else {
     exit;
 }
 
@@ -77,12 +79,14 @@ if (isset($_POST['name']) && isset($_POST['phone'])) {
 
         $order_id = save_pending_order($data['data'], $visa_tax);
 
-        generatePayment($order_id, $total_amount);
+        echo generatePayment($order_id, $total_amount);
     }
 }
 
 function save_pending_order(array $data, float $visa_tax)
 {
+    global $paymentProvider;
+
     $cart = $_SESSION['cart'] ?? array();
 
     // Checker
@@ -160,7 +164,7 @@ function save_pending_order(array $data, float $visa_tax)
 
     $total_order = calc_total_price($cart) + $del_price + $tax - $discount_data['discount_total'] - $discount_data['discount_delv'];
 
-    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(id, client_name,client_phone,client_branch_id,client_branch, order_type,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax,total_order, visa_providor) VALUES ('" . $order_id . "', '" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "', '" . $data['type'] . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax', '" . $total_order . "', 'qnb')");
+    $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO visa_orders_req(id, client_name,client_phone,client_branch_id,client_branch, order_type,client_area_id,client_area_name,client_address,address_price,client_notice,discount_id,discount_code,discount_name,delivery_discount,total_discount,tax,total_order, visa_providor) VALUES ('" . $order_id . "', '" . $data['client_name'] . "','" . $data['client_phone'] . "','" . $branch_id . "','" . $branch . "', '" . $data['type'] . "','" . $data['client_location'] . "','" . $client_area_name . "','" . $data['client_address'] . "','" . $del_price . "','" . $data['client_notice'] . "','" . $discount_data['discount_id'] . "','" . $discount_data['discount_code'] . "','" . $discount_data['discount_name'] . "','" . $discount_data['discount_delv'] . "','" . $discount_data['discount_total'] . "', '$tax', '" . $total_order . "', '". $paymentProvider ."')");
 
     foreach ($cart as $key => $item) {
         $item_info = get_item_info($item['item_id']);
@@ -210,73 +214,4 @@ function save_pending_order(array $data, float $visa_tax)
     unset($_SESSION['cart']);
 
     return $order_id;
-}
-
-function generatePayment($order_id, $amount)
-{
-    global $merchantID, $api_password;
-
-    $url = 'https://qnbalahli.gateway.mastercard.com/api/rest/version/67/merchant/'. $merchantID .'/session';
-    $server = $_SERVER['SERVER_NAME'];
-    $redirect_url = "https://$server/visa_payment";
-    
-    $get_settings_title = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='site-title'");
-    $site_title = mysqli_fetch_assoc($get_settings_title)['value'];
-    
-    $get_settings_logo = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='site-logo'");
-    $site_logo = mysqli_fetch_assoc($get_settings_logo)['value'];
-
-    $data = [
-        "apiOperation" => "INITIATE_CHECKOUT",
-        "interaction" => [
-            "operation" => "PURCHASE",
-            "displayControl" => [
-                "billingAddress" => "HIDE",
-                "customerEmail" => "HIDE"
-            ],
-            "merchant" => [
-                "name" => $site_title,
-                "url" => "https://$server",
-                "logo" => "https://$server/$site_logo"
-            ],
-            "returnUrl" => $redirect_url
-        ],
-        "order" => [
-            "currency" => "EGP",
-            "amount" => number_format((float)$amount, 2, '.', ''),
-            "id" => $order_id,
-            "description" => "Payment order for total amount of " . number_format((float)$amount, 2, '.', '')
-        ]
-    ];
-
-    $jsonData = json_encode($data);
-
-    $ch = curl_init($url);
-
-    // Set cURL options
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_USERPWD, 'merchant.'. $merchantID .':' . $api_password);
-
-    // Execute the request
-    $response = curl_exec($ch);
-
-    $data = json_decode($response, true);
-
-    // print_r($data);
-    // die();
-    $sessionId = $data['session']['id'] ?? null;
-
-    $operation_id = $data['successIndicator'] ?? null;
-
-    $add_cart = mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET operation_id='" . $operation_id . "' WHERE id='" . $order_id . "'");
-
-    echo json_encode([
-        "res" => "success",
-        "session_id" => $sessionId
-    ]);
 }

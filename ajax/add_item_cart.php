@@ -42,9 +42,13 @@
             }
     
             $_SESSION['cart'] = $cart;
+
+            
+
             echo json_encode(
                 [
                     "reached_min" => (calc_total_price($cart) >= $min_order) ? 1 : 0,
+                    "is_working" => is_work() && !is_disabled(),
                     "count" => calc_total_count($cart),
                     "price" => calc_total_price($cart)
                 ]
