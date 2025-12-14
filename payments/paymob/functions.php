@@ -13,7 +13,7 @@ function generatePayment($order_id, $amount)
 
     $server = $_SERVER['SERVER_NAME'];
     $redirect_url = "https://$server/visa_payment";
-    $webhook_url = "https://$server/ajax/pay_visa_webhook";
+    $webhook_url = "https://$server/payments/paymob/webhook.php";
     
     $get_order_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_orders_req WHERE id='" . $order_id . "'");
     $order_data = mysqli_fetch_assoc($get_order_data);
@@ -110,4 +110,65 @@ function validate_redirect_payment_response($get_params)
     $hmac = hash_hmac('sha512', $concatenated_string, $paymob_hmac);
 
     return $hmac === $get_params['hmac'];
+}
+
+function validate_webhook($data, $hmac) {
+    $order_obj = $data['obj'] ?? [];
+
+    $keys = [
+        'amount_cents',
+        'created_at',
+        'currency',
+        'error_occured',
+        'has_parent_transaction',
+        'obj.id',             
+        'integration_id',
+        'is_3d_secure',
+        'is_auth',
+        'is_capture',
+        'is_refunded',
+        'is_standalone_payment',
+        'is_voided',
+        'order.id',
+        'owner',
+        'pending',
+        'source_data.pan',
+        'source_data.sub_type',
+        'source_data.type',
+        'success'
+    ];
+
+    function get_nested_value($array, $key) {
+        $parts = explode('.', $key);
+        $value = $array;
+        foreach ($parts as $part) {
+            if (isset($value[$part])) {
+                $value = $value[$part];
+            } else {
+                $value = '';
+                break;
+            }
+        }
+        return $value;
+    }
+
+    $hmac = '';
+    foreach ($keys as $key) {
+        if ($key === 'obj.id') {
+            $hmac .= $order_obj['id'] ?? '';
+        } else {
+            $hmac .= get_nested_value($order_obj, $key);
+        }
+    }
+
+    $get_paymob_hmac = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='paymob_hmac'");
+    $paymob_hmac = mysqli_fetch_assoc($get_paymob_hmac)['value'];
+
+    $calculated_hmac = hash_hmac('sha256', $hmac, $paymob_hmac);
+
+    if ($calculated_hmac === $hmac) {
+        return true;
+    }
+
+    return false;
 }
