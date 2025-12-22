@@ -108,8 +108,8 @@
                                         <input value="<?php echo $site_setting['paymob_secret_key']; ?>" name="paymob_secret_key" id="paymob_secret_key" type="text" class="form-control border px-2" placeholder="Paymob Secret Key">
                                     </p>
                                     <p class="font-weight-bold text-dark">
-                                        <label for="paymob_iframe_id" class="font-weight-bold text-dark">IFRAME ID:</label>
-                                        <input value="<?php echo $site_setting['paymob_iframe_id']; ?>" name="paymob_iframe_id" id="paymob_iframe_id" type="text" class="form-control border px-2" placeholder="Paymob Iframe ID">
+                                        <label for="paymob_public_key" class="font-weight-bold text-dark">PUBLIC KEY:</label>
+                                        <input value="<?php echo $site_setting['paymob_public_key']; ?>" name="paymob_public_key" id="paymob_public_key" type="text" class="form-control border px-2" placeholder="Paymob Iframe ID">
                                     </p>
                                     <p class="font-weight-bold text-dark">
                                         <label for="paymob_integration_id" class="font-weight-bold text-dark">INTEGRATION ID:</label>

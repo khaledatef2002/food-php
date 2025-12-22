@@ -20,3 +20,5 @@ ALTER TABLE food_orders ADD INDEX idx_ordered_marked (ordered_date, marked);
 INSERT INTO `website_settings` (`id`, `title`, `value`) VALUES (NULL, 'paymob_hmac', ''), (NULL, 'paymob_secret_key', ''), (NULL, 'paymob_public_key', ''), (NULL, 'paymob_integration_id', '');
 
 UPDATE `website_settings` SET `title` = 'paymob_iframe_id' WHERE `title` = 'paymob_public_key';
+
+UPDATE website_settings SET title = 'paymob_public_key' WHERE title = 'paymob_iframe_id'

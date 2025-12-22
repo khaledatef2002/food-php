@@ -8,8 +8,8 @@ function generatePayment($order_id, $amount)
     $get_paymob_integration_id = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='paymob_integration_id'");
     $paymob_integration_id = mysqli_fetch_assoc($get_paymob_integration_id)['value'];
 
-    $get_paymob_iframe_id = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='paymob_iframe_id'");
-    $paymob_iframe_id = mysqli_fetch_assoc($get_paymob_iframe_id)['value'];
+    $get_paymob_public_key = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='paymob_public_key'");
+    $paymob_public_key = mysqli_fetch_assoc($get_paymob_public_key)['value'];
 
     $server = $_SERVER['SERVER_NAME'];
     $redirect_url = "https://$server/visa_payment";
@@ -49,16 +49,15 @@ function generatePayment($order_id, $amount)
     $response = curl_exec($ch);
 
     $data = json_decode($response, true);
-
     
     $operation_id = $data['intention_order_id'] ?? null;
-    $payment_token = $data['payment_keys'][0]['key'] ?? null;
+    $client_secret = $data['client_secret'] ?? null;
 
     mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET operation_id='" . $operation_id . "' WHERE id='" . $order_id . "'");
 
     return json_encode([
         "res" => "success",
-        "payment_url" => "https://accept.paymob.com/api/acceptance/iframes/". $paymob_iframe_id ."?payment_token=" . $payment_token
+        "payment_url" => "https://accept.paymob.com/unifiedcheckout/?publicKey=". $paymob_public_key ."&clientSecret=" . $client_secret
     ]);
 }
 
