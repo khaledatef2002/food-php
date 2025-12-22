@@ -21,6 +21,10 @@ if (!isset($data['obj']['order']['id'])) {
     exit('Order ID not found in payload');
 }
 
+if($data['obj']['success'] != true) {
+    exit('Payment not successful');
+}
+
 error_log("order id found ");
 $order_id = $data['obj']['order']['id'];
 
