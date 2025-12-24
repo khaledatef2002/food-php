@@ -21,7 +21,7 @@ if (!isset($data['obj']['order']['id'])) {
     exit('Order ID not found in payload');
 }
 
-if($data['obj']['success'] != true) {
+if($data['obj']['success'] != true && $data['obj']['pending'] != true) {
     exit('Payment not successful');
 }
 
@@ -38,7 +38,7 @@ if (!$order) {
 error_log("order found ");
 
 
-if (isset($order['visa_provider']) && strtolower($order['visa_provider']) === 'paymob') {
+if (isset($order['visa_providor']) && strtolower($order['visa_providor']) === 'paymob') {
     error_log("paymob ");
 
     if(validate_webhook($data, $_GET['hmac'])) {
