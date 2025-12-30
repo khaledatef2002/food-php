@@ -72,6 +72,7 @@ if (isset($_POST['name']) && isset($_POST['phone'])) {
 
         $total_amount = $price + $del - $total_discount + $tax;
 
+        $visa_tax = 0;
         if ($GLOBALS['visa_fixed_tax'] > 0 || $GLOBALS['visa_percent_tax'] > 0) {
             $visa_tax = (($GLOBALS['visa_percent_tax'] * $total_amount) / 100) + $GLOBALS['visa_fixed_tax'];
             $total_amount = $total_amount + $visa_tax;
@@ -83,7 +84,7 @@ if (isset($_POST['name']) && isset($_POST['phone'])) {
     }
 }
 
-function save_pending_order(array $data, float $visa_tax)
+function save_pending_order($data, $visa_tax)
 {
     global $paymentProvider;
 
