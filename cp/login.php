@@ -18,7 +18,7 @@
 <head>
   <?php include 'temps/head.php'; ?>
   <title>
-    cPanel V2
+    Deiafh - <?php echo $site_setting['site-title']; ?>
   </title>
 </head>
 <?php

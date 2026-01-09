@@ -24,7 +24,7 @@
   $currency = $fetch['value'];
   ?>
   <title>
-    Powered by diafh
+    Deiafh - <?php echo $site_setting['site-title']; ?>
   </title>
 </head>
 

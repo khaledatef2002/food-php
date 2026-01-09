@@ -19,7 +19,7 @@
     <?php include 'temps/head.php'; ?>
     <?php if (!is_logged()) header('Location: login.php'); ?>
     <title>
-        Powered by diafh
+        Deiafh - <?php echo $site_setting['site-title']; ?>
     </title>
 </head>
 <?php
