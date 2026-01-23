@@ -47,22 +47,26 @@ $columns = array(
             };
         }
     ),
-    array('db' => 'active_Status', 'dt' => 4, 'formatter' => function ($d) {
+    array(
+        'db'        => 'id',
+        'dt'        => 4,
+        'formatter' => function ($d, $row) {
+            return '
+                <div class="form-check form-switch d-flex flex-column align-items-center" onclick="switch_item_status('.$d.')">
+                    <input class="form-check-input ms-2" type="checkbox" id="mySwitch"" ' . ($row['active_Status'] == 1 ? 'checked' : '') . '>
+                </div>
+            ';
+        }
+    ),
+    array('db' => 'active_Status', 'dt' => 6, 'formatter' => function ($d) {
         return match ((int)$d) {
             1 => '<span class="badge text-bg-success text-white">يعمل</span>',
             0 => '<span class="badge text-bg-danger text-white">لا يعمل</span>',
         };
     }),
     array(
-        'db'        => 'id',
-        'dt'        => 5,
-        'formatter' => function ($d, $row) {
-            return '<div class="d-flex justify-content-center align-items-center gap-1"><button class="btn btn-success my-0 py-1" onclick="open_switch('.$d.')">تعديل</button></div>';
-        }
-    ),
-    array(
         'db' => 'img',
-        'dt' => 6,
+        'dt' => 7,
         'formatter' => function ($d, $row) {
             return "<div style='height:40px;'><img style='height:100%;' src='../" . $d . "'></div>";
         }

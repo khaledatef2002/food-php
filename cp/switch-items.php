@@ -54,8 +54,7 @@ endif;
                                             <th class="text-center text-white text-xs font-weight-bolder">اسم الصنف</th>
                                             <th class="text-center text-white text-xs font-weight-bolder">التصنيف</th>
                                             <th class="text-center text-white text-xs font-weight-bolder">نوع الحالة</th>
-                                            <th class="text-center text-white text-xs font-weight-bolder">الحالة</th>
-                                            <th class="text-center text-white text-xs font-weight-bolder">إجراء</th>
+                                            <th class="text-center text-white text-xs font-weight-bolder">تعطيل / تشغيل</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center">
@@ -66,8 +65,7 @@ endif;
                                             <th class="text-center text-white text-xs font-weight-bolder">اسم الصنف</th>
                                             <th class="text-center text-white text-xs font-weight-bolder">التصنيف</th>
                                             <th class="text-center text-white text-xs font-weight-bolder">نوع الحالة</th>
-                                            <th class="text-center text-white text-xs font-weight-bolder">الحالة</th>
-                                            <th class="text-center text-white text-xs font-weight-bolder">إجراء</th>
+                                            <th class="text-center text-white text-xs font-weight-bolder">تعطيل / تشغيل</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -80,49 +78,6 @@ endif;
         </div>
     </main>
 
-    <!-- Start Modal -->
-    <div class="modal fade" id="switch-modal" data-order-id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">تعطيل/تفعيل (<span class="item_name"></span>)</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id">
-                    <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
-                        <label class="btn btn-secondary" for="active1">
-                            <input type="radio" name="active" id="active1" value="1"> مفعل
-                        </label>
-                        <label class="btn btn-secondary" for="active2">
-                            <input type="radio" name="active" id="active2" value="2"> مفعل خلال فترة
-                        </label>
-                        <label class="btn btn-secondary" for="active3">
-                            <input type="radio" name="active" id="active3" value="0"> غير مفعل
-                        </label>
-                    </div>
-                    <div id="active_period" class="flex-row justify-content-between gap-2">
-                        <p class="font-weight-bold text-dark flex-fill">
-                            <label for="item_start" class="font-weight-bold text-dark">تاريخ البداية:</label>
-                            <input name="item_start_date" id="item_start" type="date" class="form-control border px-2 mb-1">
-                            <input name="item_start_time" id="item_start" type="time" class="form-control border px-2">
-                        </p>
-                        <p class="font-weight-bold text-dark flex-fill">
-                            <label for="item_end" class="font-weight-bold text-dark">تاريخ النهاية:</label>
-                            <input name="item_end_date" id="item_end" type="date" class="form-control border px-2 mb-1">
-                            <input name="item_end_time" id="item_end" type="time" class="form-control border px-2">
-                        </p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button id="save_switch" type="button" class="btn btn-primary spinner-button-loading"><span class="content-button-loading">تأكيد</span>
-                        <div class="lds-dual-ring"></div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
     <?php include 'temps/jslibs.php'; ?>
     <script>
         var DataTableOptions = {
@@ -156,34 +111,6 @@ endif;
                                 default_option<?php echo $cat['id']; ?>.innerText = "<?php echo $cat['category_name']; ?>"
                                 select.appendChild(default_option<?php echo $cat['id']; ?>)
                             <?php } ?>
-
-                            column.footer().replaceChildren(select);
-
-                            // Event listener for user input
-                            select.addEventListener('change', () => {
-                                if (column.search() !== select.value) {
-                                    column.search(select.value).draw();
-                                }
-                            });
-
-                        } else if (title == "الحالة") {
-                            let select = document.createElement('select')
-                            select.setAttribute("class", "form-control text-center border")
-
-                            let default_option0 = document.createElement('option')
-                            default_option0.setAttribute("value", "")
-                            default_option0.innerText = "الكل"
-                            select.appendChild(default_option0)
-
-                            let default_option = document.createElement('option')
-                            default_option.setAttribute("value", "0")
-                            default_option.innerText = "لا يعمل"
-                            select.appendChild(default_option)
-
-                            let option1 = document.createElement('option')
-                            option1.setAttribute("value", "1")
-                            option1.innerText = "يعمل"
-                            select.appendChild(option1)
 
                             column.footer().replaceChildren(select);
 
@@ -261,73 +188,12 @@ endif;
         };
         var table = $("table").DataTable(DataTableOptions);
 
-        function open_switch(id)
+        function switch_item_status(id)
         {
-            $.get("ajax/get_item_info.php?id=" + id, function(res){
-                res = JSON.parse(res)
-                console.log(res)
-
-                $("#switch-modal input[name='id']").val(id)
-                $(`#switch-modal input[name='active']`).prop("checked", false)
-                if(res.body.active == 2)
-                {
-                    $("#active_period").css("display", "flex")
-                    $("#switch-modal input[name='item_start_date']").val(res.body.date_from)
-                    $("#switch-modal input[name='item_start_time']").val(res.body.time_from)
-                    $("#switch-modal input[name='item_end_date']").val(res.body.date_to)
-                    $("#switch-modal input[name='item_end_time']").val(res.body.time_to)
-                }
-                else
-                {
-                    $("#active_period").css("display", "none")
-                }
-
-                $("#switch-modal .item_name").text(res.body.title)
-                $(`#switch-modal input[name='active'][value='${res.body.active}']`).prop("checked", true)
-                
+            $.post("ajax/switch_item_status.php", {
+                id
             })
-            $("#switch-modal").modal("show")
         }
-
-        $("#save_switch").click(function(){
-            var button = this
-            var id = $("#switch-modal input[name='id']").val()
-            var active =$("#switch-modal input[name='active']:checked").val()
-            var item_start_date = $("#switch-modal input[name='item_start_date']").val()
-            var item_start_time = $("#switch-modal input[name='item_start_time']").val()
-            var item_end_date = $("#switch-modal input[name='item_end_date']").val()
-            var item_end_time =$("#switch-modal input[name='item_end_time']").val()
-
-            $(button).prop("disabled", true)
-            $.post("ajax/save_switch.php", {
-                id,active,item_start_date,item_start_time,item_end_date,item_end_time
-            }, function(res){
-                res = JSON.parse(res)
-                console.log(res)
-                if (res.msg == "success") {
-                    Swal.fire({
-                        icon: "success",
-                        text: "تم حفظ التعديل بنجاح"
-                    })
-                    table.draw()
-                } else if (res.msg == "error") {
-                    Swal.fire({
-                        icon: "error",
-                        text: res.body
-                    })
-                }
-                $(button).prop("disabled", false)
-            })
-        })
-
-        $("input[name='active']").click(function() {
-            var vl = $(this).val()
-            if (vl == 2) {
-                $("#active_period").css("display", "flex")
-            } else {
-                $("#active_period").css("display", "none")
-            }
-        })
     </script>
 </body>
 
