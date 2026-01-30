@@ -309,7 +309,7 @@
           </div>
 
           <?php
-          $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches ORDER BY branch_name ASC");
+          $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE active = 1 ORDER BY branch_name ASC");
           ?>
           <div id="choose-branch-input" class="mt-3" style="margin:auto;width:80%;margin-bottom:10px; <?php echo (mysqli_num_rows($query) <= 1) ? 'display:none;' : ''; ?>">
             <label><?php echo __('choose_branch'); ?></label>
@@ -506,7 +506,7 @@
       const models = [];
       const makes = [
         <?php
-        $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches ORDER BY branch_name ASC");
+        $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE active = 1 ORDER BY branch_name ASC");
         while ($location = mysqli_fetch_assoc($query)) {
         ?> {
             text: '<?php echo $location["branch_name"]; ?>',
@@ -517,7 +517,7 @@
 
       const modelsByMake = {
         <?php
-        $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches ORDER BY branch_name ASC");
+        $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE active = 1 ORDER BY branch_name ASC");
         while ($location = mysqli_fetch_assoc($query)) {
         ?>
 
@@ -578,7 +578,7 @@
       });
       <?php
 
-      $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches");
+      $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE active=1");
       $branch = mysqli_fetch_assoc($query);
 
       if (mysqli_num_rows($query) == 1) { ?>
@@ -587,16 +587,19 @@
 
 
       <?php }
-      if (isset($order_info[2]) && !empty($order_info[2])) {
+      if (isset($order_info[2]) && !empty($order_info[2])):
         $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_locations WHERE id='" . $order_info[2] . "'");
         $fetch = mysqli_fetch_assoc($query);
 
         $query = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='" . $fetch['branch_id'] . "'");
         $branch = mysqli_fetch_assoc($query);
+
+        if($branch['active'] == 1):
       ?>
         sel1[0].selectize.setValue('<?php echo $branch['id']; ?>')
         sel2[0].selectize.setValue('<?php echo $order_info[2]; ?>')
-      <?php } ?>
+        <?php endif; ?>
+      <?php endif; ?>
     });
   </script>
 </body>

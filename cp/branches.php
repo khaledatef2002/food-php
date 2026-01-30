@@ -59,6 +59,12 @@
                                     اسم الفرع:
                                     <input name="branch_name" class="form-control border px-3" type="text" value="<?php echo $branch['branch_name']; ?>">
                                 </p>
+                                <?php if (check_user_perm(['branches-edit'])): ?>
+                                    <div class="form-check form-switch d-flex align-items-center gap-2" onclick="switch_branch_status(<?php echo $branch['id']; ?>)">
+                                        <label class="m-0 fw-bold">التفعيل</label>
+                                        <input class="form-check-input ms-2" type="checkbox" id="mySwitch" <?php if ($branch['active'] == 1) echo 'checked'; ?>>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (check_user_perm(['branches-edit']) || check_user_perm(['branches-remove']) || check_user_perm(['locations-view'])) : ?>
                                     <div class="m-auto mb-0 mt-1">
                                         <?php if (check_user_perm(['locations-view'])) : ?>
@@ -106,6 +112,23 @@
     <!-- End Add New Social modal -->
     <?php include 'temps/jslibs.php'; ?>
     <script>
+        function switch_branch_status(id) {
+            $.post("ajax/switch-branch-status.php", {
+                id: id,
+            }, function(res) {
+                if (res != "error") {
+                    Swal.fire({
+                        icon: "success",
+                        text: "تم تحديث الحالة بنجاح"
+                    })
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        text: "فشل تحديث الحالة"
+                    })
+                }
+            })
+        }
         function save_branch(id, me) {
             var name = $(me).parent().parent().find("input[name='branch_name']").val()
 

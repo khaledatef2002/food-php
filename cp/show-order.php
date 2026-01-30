@@ -86,13 +86,25 @@ $sunmi_print = $fetch['value'];
                                 </p>
                                 <p class="font-weight-bold my-0">
                                     </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> رقم الهاتف: <span class="font-weight-normal"><?php echo $item['client_phone']; ?></span> <?php echo (check_new_number($item['client_phone'])) ? '<span class="badge bg-warning py-1">عميل جديد</span>' : ''; ?>
+                                    <a href="https://wa.me/{$item['client_phone']}" target="_blank"><i class="fab fa-whatsapp text-success"></i></a>
                                 </p>
+                                <?php if ($item['client_branch'] != ""): ?>
+                                    <p class="font-weight-bold my-0">
+                                        </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> الفرع: <span class="font-weight-normal"><?php echo $item['client_branch']; ?></span>
+                                    </p>
+                                <?php endif; ?>
+                                <?php $order_type = $item['order_type'] == 'delivery' ? 'توصيل' : 'استلام من الفرع'; ?>
                                 <p class="font-weight-bold my-0">
-                                    </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> المنطقة: <span class="font-weight-normal"><?php echo $item['client_area_name']; ?></span>
+                                    </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> نوع الطلب: <span class="font-weight-normal"><?php echo $order_type; ?></span>
                                 </p>
-                                <p class="font-weight-bold my-0">
-                                    </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> العنوان: <span class="font-weight-normal"><?php echo $item['client_address']; ?>
-                                </p>
+                                <?php if ($item['order_type'] == "delivery") : ?>
+                                    <p class="font-weight-bold my-0">
+                                        </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> المنطقة: <span class="font-weight-normal"><?php echo $item['client_area_name']; ?></span>
+                                    </p>
+                                    <p class="font-weight-bold my-0">
+                                        </span><i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i> العنوان: <span class="font-weight-normal"><?php echo $item['client_address']; ?>
+                                    </p>
+                                <?php endif; ?>
                                 <p class="font-weight-bold my-0">
                                     تاريخ الطلب: <span class="font-weight-normal"><bdi><?php echo date("Y-m-d h:i:s a", $item['ordered_date']); ?></bdi></span>
                                 </p>

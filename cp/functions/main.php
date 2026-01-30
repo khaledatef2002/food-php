@@ -455,6 +455,7 @@ function get_order_card(array $item): string
                         </p>
                         <p class="font-weight-bold my-0">
                             <i role="button" class="fas fa-clipboard text-dark copy-button ms-2"></i>رقم الهاتف: <span class="font-weight-normal">{$item['client_phone']}</span> $new
+                            <a href="https://wa.me/{$item['client_phone']}" target="_blank"><i class="fab fa-whatsapp text-success"></i></a>
                         </p>
         HERE;
             

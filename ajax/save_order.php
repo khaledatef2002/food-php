@@ -48,6 +48,7 @@
             exit();
         }
     }
+    
 
     $data['client_name'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_name']));
     $data['client_phone'] = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($data['client_phone']));
@@ -86,6 +87,11 @@
 
     $get_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='".$branch_id."'");
     $fetchBranch = mysqli_fetch_assoc($get_branch);
+
+    if($fetchBranch['active'] == 0)
+    {
+        exit();
+    }
 
     $branch = $fetchBranch['branch_name'];
 

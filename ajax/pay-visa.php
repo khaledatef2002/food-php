@@ -123,6 +123,11 @@ function save_pending_order($data, $visa_tax)
     $get_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_branches WHERE id='" . $fetch['branch_id'] . "'");
     $fetchBranch = mysqli_fetch_assoc($get_branch);
 
+    if($fetchBranch['active'] == 0)
+    {
+        exit();
+    }
+
     $branch = $fetchBranch['branch_name'];
     $branch_id = $fetchBranch['id'];
 
