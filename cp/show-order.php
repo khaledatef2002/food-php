@@ -340,7 +340,7 @@ $sunmi_print = $fetch['value'];
                 }).fail(function(xhr, status, error) {
                     live()
                 })
-            }, 500);
+            }, 2000);
         }
         var isPlaying = function() {
             return audio.currentAudio &&
