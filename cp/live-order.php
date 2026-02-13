@@ -204,7 +204,7 @@
                 }).fail(function(xhr, status, error) {
                     live()
                 })
-            }, 2000);
+            }, 3000);
         }
         var isPlaying = function() {
             return audio.currentAudio &&
