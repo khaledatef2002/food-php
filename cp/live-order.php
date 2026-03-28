@@ -93,8 +93,16 @@
                 <div class="modal-body">
                     <select class="form-select border">
                         <option value="الغاء من قبل العميل">الغاء من قبل العميل</option>
+                        <option value="اوردر متكرر">اوردر متكرر</option>
                         <option value="الغاء للتعديل">الغاء للتعديل</option>
                         <option value="الغاء لعدم توفر المنتج">الغاء لعدم توفر المنتج</option>
+                        <option value="الغاء للتبديل بآخر">الغاء للتبديل بآخر</option>
+                        <option value="عنوان خاطئ او خارج نطاق التوصيل">عنوان خاطئ او خارج نطاق التوصيل</option>
+                        <option value="الغاء للتأخير">الغاء للتأخير</option>
+                        <option value="المطعم غير متاح">المطعم غير متاح</option>
+                        <option value="مشكلة فى الوصول للعميل">مشكلة فى الوصول للعميل</option>
+                        <option value="انقطاع الانترنت">انقطاع الانترنت</option>
+                        <option value="عطل فى السيستم">عطل فى السيستم</option>
                     </select>
                 </div>
                 <div class="modal-footer">
