@@ -18,20 +18,7 @@ if (isset($_POST['id']) && isset($_POST['username']) && isset($_POST['nickname']
             exit;
         }
 
-        $perm_website_settings = (isset($_POST['website_settings'])) ? 1 : 0;
-        $perm_general = (isset($_POST['general'])) ? 1 : 0;
-        $perm_menu = (isset($_POST['menu'])) ? 1 : 0;
-        $perm_ratings = (isset($_POST['ratings'])) ? 1 : 0;
-        $perm_order_data = (isset($_POST['order_data'])) ? 1 : 0;
-        $perm_order_live = (isset($_POST['order_live'])) ? 1 : 0;
-        $perm_change_active = (isset($_POST['change_active'])) ? 1 : 0;
-        $perm_accounts = (isset($_POST['accounts'])) ? 1 : 0;
-        $perm_discount = (isset($_POST['discount'])) ? 1 : 0;
-        $perm_system_menu = (isset($_POST['system_menu'])) ? 1 : 0;
-        $logs = (isset($_POST['logs'])) ? 1 : 0;
-
         $insert = mysqli_query($GLOBALS['conn'], "UPDATE panel_user SET username='$username', nickname='$nickname', role_id='$role_id' WHERE id='$id'");
-        $insert2 = mysqli_query($GLOBALS['conn'], "UPDATE users_perm SET logs=$logs, website_settings='$perm_website_settings',general='$perm_general',menu='$perm_menu',ratings='$perm_ratings',order_data='$perm_order_data',order_live='$perm_order_live',accounts='$perm_accounts',discount='$perm_discount',change_active='$perm_change_active',system_menu='$perm_system_menu' WHERE account_id='$id'");
 
         $admin = get_admin_info()['nickname'];
 
