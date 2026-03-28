@@ -67,10 +67,12 @@
                                         }
                                         ?>
                                     </p>
-                                    <p class="text-center">
-                                        <?php echo (isset($account['last_online']) && !empty($account['last_online']) && $account['last_online'] >= time()) ? '<span class="text-success">Online</span>' : '<span class="text-dark fw-bold">Last Seen:</span> ' . date("Y-m-d h:i:s a", $account['last_online']); ?>
-                                        <br><?php echo (isset($account['last_online']) && !empty($account['last_online']) && $account['last_online'] >= time()) ? $account['page'] : ''; ?>
-                                    </p>
+                                    <?php if (isset($account['last_online']) && !empty($account['last_online']) && $account['last_online'] != "") : ?>
+                                        <p class="text-center">
+                                            <?php echo (isset($account['last_online']) && !empty($account['last_online']) && $account['last_online'] >= time()) ? '<span class="text-success">Online</span>' : '<span class="text-dark fw-bold">Last Seen:</span> ' . date("Y-m-d h:i:s a", $account['last_online']); ?>
+                                            <br><?php echo (isset($account['last_online']) && !empty($account['last_online']) && $account['last_online'] >= time()) ? $account['page'] : ''; ?>
+                                        </p>
+                                    <?php endif; ?>
                                 </div>
                                 <?php if (check_user_perm(['accounts-edit']) || check_user_perm(['accounts-remove'])) : ?>
                                     <div class="d-flex justify-content-between">
