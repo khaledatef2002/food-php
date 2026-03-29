@@ -15,6 +15,15 @@ $data = array();
 // Getting Total Card Price
 $data['price'] = calc_total_price($_SESSION['cart']);
 
+$get_min_order_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_min'");
+$min_order = mysqli_fetch_assoc($get_min_order_settings)['value'];
+
+
+if($data['price'] < $min_order)
+{
+    exit;
+}
+
 //getting data
 $rec = $_POST['data'];
 $rec['phone'] = filter_var(trim($rec['phone']), FILTER_SANITIZE_NUMBER_INT);
