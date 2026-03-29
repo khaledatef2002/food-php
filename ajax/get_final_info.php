@@ -4,7 +4,7 @@ include '../includes/conn.php';
 include '../includes/functions.php';
 
 if (!is_work() || is_disabled()) {
-    exit();
+    die();
 }
 
 session_start();
@@ -21,7 +21,7 @@ $min_order = mysqli_fetch_assoc($get_min_order_settings)['value'];
 
 if($data['price'] < $min_order)
 {
-    exit;
+    die;
 }
 
 //getting data
