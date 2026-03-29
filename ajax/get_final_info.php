@@ -4,6 +4,7 @@ include '../includes/conn.php';
 include '../includes/functions.php';
 
 if (!is_work() || is_disabled()) {
+    http_response_code(500);
     die();
 }
 
@@ -21,6 +22,7 @@ $min_order = mysqli_fetch_assoc($get_min_order_settings)['value'];
 
 if($data['price'] < $min_order)
 {
+    http_response_code(500);
     die;
 }
 
