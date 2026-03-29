@@ -8,7 +8,7 @@
 
     if(!is_work() || is_disabled())
     {
-        exit();
+        die();
     }
 
     session_start();
@@ -18,12 +18,12 @@
     }
     else
     {
-        exit();
+        die();
     }
 
     if(calc_total_price($cart) < $min_order)
     {
-        exit;
+        die;
     }
 
     $data = $_POST['data'];
@@ -31,21 +31,21 @@
     // Checker
     if(empty(trim($data['client_name'])) || strlen(trim($data['client_name'])) < 3 || strpos($data['client_name'],'<') !== false || strpos($data['client_name'],'>')  !== false || strpos($data['client_name'],'"')  !== false || strpos($data['client_name'],"'")  !== false || strpos($data['client_name'],'/')  !== false || strpos($data['client_name'],'&')  !== false || strpos($data['client_name'],';')  !== false )
     {
-        exit();
+        die();
     }
     else if(strlen(trim($data['client_phone'])) != 11 || !(substr( $data['client_phone'], 0, 3 ) != "010" || substr( $data['client_phone'], 0, 3 ) != "011" || substr( $data['client_phone'], 0, 3 ) != "012" || substr( $data['client_phone'], 0, 3 ) != "015") || is_nan($data['client_phone']))
     {
-        exit();
+        die();
     }
     else if($data['type'] == 'delivery')
     {
         if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
         {
-            exit();
+            die();
         }
         else if(empty(trim($data['client_address'])) || strlen(trim($data['client_address'])) < 5 || strpos($data['client_address'],'<') !== false || strpos($data['client_address'],'>') !== false || strpos($data['client_address'],'"') !== false || strpos($data['client_address'],"'") !== false || strpos($data['client_address'],'/') !== false || strpos($data['client_address'],'&') !== false || strpos($data['client_address'],';') !== false)
         {
-            exit();
+            die();
         }
     }
     
