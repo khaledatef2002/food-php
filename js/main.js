@@ -507,7 +507,7 @@ $("#user_info button:last-of-type").click(function(){
           $("#final_info #order_discount").css("display", "flex")
           $("#final_info #order_discount span:last-of-type").text("- " + data.discount.discount_total + " " + currency)
         }
-        if(data.discount.discount_delv > 0 && data[5] == 'delivery')
+        if(data.discount.discount_delv > 0 && order_type == 'delivery')
         {
           discount = data.discount.discount_delv
           $("#final_info #delivery_discount").css("display", "flex")
