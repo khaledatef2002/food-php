@@ -787,3 +787,50 @@ function get_system_permissions(): array
         'switch-items'
     ];
 }
+
+function base64UrlEncode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function generateJWT($payload) {
+    $header = [
+        "alg" => "HS256",
+        "typ" => "JWT"
+    ];
+
+    $headerEncoded = base64UrlEncode(json_encode($header));
+    $payloadEncoded = base64UrlEncode(json_encode($payload));
+
+    $signature = hash_hmac(
+        'sha256',
+        $headerEncoded . "." . $payloadEncoded,
+        $GLOBALS['JWT_SECRET_KEY'],
+        true
+    );
+
+    $signatureEncoded = base64UrlEncode($signature);
+
+    return $headerEncoded . "." . $payloadEncoded . "." . $signatureEncoded;
+}
+
+function sendWebSocketCurl($data, $request, $token) {
+    $jsonData = json_encode($data);
+
+    $ch = curl_init($GLOBALS['websocket_base_url'] . "/" . $request);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $token
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        return false;
+    } else {
+        return $response;
+    }
+}

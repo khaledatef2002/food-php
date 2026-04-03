@@ -155,6 +155,7 @@ $("#submit_cancel").click(function(){
             $("#cancel_modal").modal("hide")
         }
     })
+    $(this).attr("disabled", false)
 })
 /* End Live Order */
 

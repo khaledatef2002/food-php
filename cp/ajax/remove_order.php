@@ -11,7 +11,14 @@ if (isset($_POST['id']) && is_logged() && check_user_perm(['orders-data-remove']
 
     logg("login", "لقد قام $admin بإزالة طلب رقم $id");
 
-    mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'remove','$id')");
+    $jwt = generateJWT([
+        "channel" => $GLOBALS['channel'],
+        "iat" => time(),
+        "exp" => time() + 3600
+    ]);
+
+    sendWebSocketCurl(["orderId" => $id], "remove-order", $jwt);
+
     if (!$del1) {
         echo "error";
     }

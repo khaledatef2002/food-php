@@ -118,16 +118,97 @@
 
 
     <?php include 'temps/jslibs.php'; ?>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
-        <?php
-        $last_notify = mysqli_query($GLOBALS['conn'], "SELECT * FROM live_notify WHERE page ='order' ORDER BY ID DESC");
-        $last_notify = mysqli_fetch_assoc($last_notify);
-        ?>
-
         var audio = new Audio('notification_sound.mp3');
         audio.loop = true;
 
-        let last_notify = "<?php echo $last_notify['id'] ?? '0'; ?>";
+        const socket = io("<?php echo $GLOBALS['websocket_base_url']; ?>", {
+            auth: {
+                token: "<?php echo generateJWT(["channel" => $GLOBALS['channel'], "iat" => time(), "exp" => time() + 3600]); ?>"
+            }
+        }); 
+
+        socket.on("order:new", (data) => {
+            $.post("ajax/get-order-card.php", {
+                id: data.orderId,
+            }, function(result) {
+                if (result != "") {
+                    const res = JSON.parse(result);
+                    $("#parent").prepend(res.data)
+                    if(res.is_pending) {
+                        audio.play()
+                    } else {
+                        audio.pause()
+                    }
+                    try {
+                        var notify = new Notification(
+                            `لقد تم اضافة طلب جديد!`, {
+                                body: `رقم الاوردر #${data.orderId}`,
+                                icon: '../<?php echo $site_setting['site-logo']; ?>'
+                            }
+                        );
+                        notify.onclick = function() {
+                            window.focus();
+                            notification.close();
+                        };
+                        notify.addEventListener("error", e => {
+                            alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
+                        })
+                    } catch (e) {
+                        console.error("Notification error:", e);
+                    }
+                }
+            });
+        });
+
+        socket.on("order:approve", (data) => {
+            $.post("ajax/get-order-card.php", {
+                id: data.orderId,
+            }, function(result) {
+                if (result != "") {
+                    const res = JSON.parse(result);
+                    var parent = $(`#parent > div[data-id='${data.orderId}']`)
+                    parent.replaceWith(res.data)
+                    if(res.is_pending) {
+                        audio.play()
+                    } else {
+                        audio.pause()
+                    }
+                }
+            })
+        });
+
+        socket.on("order:cancel", (data) => {
+            $.post("ajax/get-order-card.php", {
+                id: data.orderId,
+            }, function(result) {
+                if (result != "") {
+                    const res = JSON.parse(result);
+                    var parent = $(`#parent > div[data-id='${data.orderId}']`)
+                    parent.replaceWith(res.data)
+                    if(res.is_pending) {
+                        audio.play()
+                    } else {
+                        audio.pause()
+                    }
+                }
+            })
+        });
+
+        socket.on("order:remove", (data) => {
+            var parent = $(`#parent > div[data-id='${data.orderId}']`)
+            parent.remove()
+            $.post("ajax/check_unmarked.php", {
+                id: data.orderId,
+            }, function(result) {
+                if (result == "true") {
+                    audio.play()
+                } else {
+                    audio.pause()
+                }
+            })
+        });
 
         if (!window.Notification) {
             console.log('Browser does not support notifications.');
@@ -144,76 +225,12 @@
                 });
             }
         }
-
-
-        const worker = new Worker('js/notification.js');
-        worker.postMessage('start');
-        worker.onmessage = function(event) {
-            console.log(`data ${event.data}`)
-            if (event.data == true) {
-                if (audio.paused) {
-                    audio.play()
-                }
-            } else {
-                if (!audio.paused) {
-                    audio.pause()
-                }
+        <?php 
+            if(check_unresponsed_order_period()) {
+                echo "audio.play()";
             }
-        };
+        ?>
 
-
-        live()
-
-        function live() {
-            setTimeout(() => {
-                $.post("ajax/live-notify.php", {
-                    last: last_notify,
-                    page: 'order'
-                }, function(result) {
-                    if (result != "empty") {
-                        var data = JSON.parse(result)
-                        data.forEach(function(val, index) {
-                            if (val.type == "add") {
-                                $("#parent").prepend(val.order)
-                                try {
-                                    var notify = new Notification(
-                                        `لقد تم اضافة طلب جديد!`, {
-                                            body: `رقم الاوردر #${val.order_id}`,
-                                            icon: '../<?php echo $site_setting['site-logo']; ?>'
-                                        }
-                                    );
-                                    notify.onclick = function() {
-                                        window.focus();
-                                        notification.close();
-                                    };
-                                    notify.addEventListener("error", e => {
-                                        alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
-                                    })
-                                } catch (e) {
-                                    console.error("Notification error:", e);
-                                }
-                            } else if (val.type == "accept") {
-                                var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.replaceWith(val.order)
-                            } else if (val.type == "cancel") {
-                                var parent = $(`#parent > div[data-id='${val.order_id}']`)
-                                parent.replaceWith(val.order)
-                            } else if (val.type == "remove") {
-                                $(`#parent > div[data-id='${val.order_id}']`).remove()
-                            } else if (val.type == "emptyAll") {
-                                $(`#parent > div`).remove()
-                            }
-                            check_live_order_visibility()
-                            last_notify = val.id
-                        })
-                    }
-
-                    live()
-                }).fail(function(xhr, status, error) {
-                    live()
-                })
-            }, 3000);
-        }
         var isPlaying = function() {
             return audio.currentAudio &&
                 audio.currentAudio.currentTime > 0 &&

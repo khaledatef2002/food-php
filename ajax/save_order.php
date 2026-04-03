@@ -129,8 +129,6 @@
 
     $order_id = mysqli_insert_id($GLOBALS['conn']);
 
-    $notify = mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'add', '$order_id')");
-
     foreach($cart as $key => $item) {
         $item_info = get_item_info($item['item_id']);
         if(isset($item['size']))
@@ -185,6 +183,14 @@
     }
 
     unset($_SESSION['cart']);
+    
     echo $order_id;
 
+    $jwt = generateJWT([
+        "channel" => $GLOBALS['channel'],
+        "iat" => time(),
+        "exp" => time() + 3600
+    ]);
+
+    sendWebSocketCurl(["orderId" => $order_id], "notify-order", $jwt);
 ?>

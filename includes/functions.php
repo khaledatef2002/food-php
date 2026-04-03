@@ -564,7 +564,6 @@ function save_visa_order($order)
             $add_cart = mysqli_query($GLOBALS['conn'], "INSERT INTO food_orders(client_name,client_phone,client_branch_id,client_branch, order_type, client_area_id,client_area_name,client_address,address_price,client_notice,ordered_date,discount_id,discount_code,discount_name,delivery_discount,total_discount, method, transaction_id, paid, tax, total_order, visa_providor) VALUES ('" . $order_data['client_name'] . "','" . $order_data['client_phone'] . "','" . $order_data['client_branch_id'] . "','" . $order_data['client_branch'] . "', '". $order_data['order_type'] ."' ,'" . $order_data['client_area_id'] . "','" . $order_data['client_area_name'] . "','" . $order_data['client_address'] . "','" . $order_data['address_price'] . "','" . $order_data['client_notice'] . "','" . $date . "','" . $order_data['discount_id'] . "','" . $order_data['discount_code'] . "','" . $order_data['discount_name'] . "','" . $order_data['delivery_discount'] . "','" . $order_data['total_discount'] . "',1,'" . $order_data['operation_id'] . "','" . $order_data['total_order'] . "', '". $order_data['tax'] ."', '" . $order_data['total_order'] . "', '". $order_data['visa_providor'] ."')");
             $order_id = mysqli_insert_id($GLOBALS['conn']);
             http_response_code(200);
-            $notify = mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'add', '$order_id')");
 
             $get_cart_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_cart_req WHERE order_id='" . $order_data['id'] . "'");
             while ($cart_data = mysqli_fetch_assoc($get_cart_data)) {
@@ -579,6 +578,15 @@ function save_visa_order($order)
             }
 
             mysqli_query($GLOBALS['conn'], "UPDATE visa_orders_req SET status = 1 WHERE operation_id='" . $order . "'");
+
+            $jwt = generateJWT([
+                "channel" => $GLOBALS['channel'],
+                "iat" => time(),
+                "exp" => time() + 3600
+            ]);
+
+            sendWebSocketCurl(["orderId" => $order_id], "notify-order", $jwt);
+
             return $order_id;
         } else {
             $get_order = mysqli_query($GLOBALS['conn'], "SELECT id FROM food_orders WHERE transaction_id='" . $order . "'");
@@ -745,4 +753,51 @@ function generate_order_whatsapp_message($order_id)
         MSG;
 
     return $msg_header . $msg_order_det_header . $msg_order_det . $msg_footer;
+}
+
+function base64UrlEncode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function generateJWT($payload) {
+    $header = [
+        "alg" => "HS256",
+        "typ" => "JWT"
+    ];
+
+    $headerEncoded = base64UrlEncode(json_encode($header));
+    $payloadEncoded = base64UrlEncode(json_encode($payload));
+
+    $signature = hash_hmac(
+        'sha256',
+        $headerEncoded . "." . $payloadEncoded,
+        $GLOBALS['JWT_SECRET_KEY'],
+        true
+    );
+
+    $signatureEncoded = base64UrlEncode($signature);
+
+    return $headerEncoded . "." . $payloadEncoded . "." . $signatureEncoded;
+}
+
+function sendWebSocketCurl($data, $request, $token) {
+    $jsonData = json_encode($data);
+
+    $ch = curl_init($GLOBALS['websocket_base_url'] . "/" . $request);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $token
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        return false;
+    } else {
+        return $response;
+    }
 }

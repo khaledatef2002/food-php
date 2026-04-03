@@ -9,7 +9,14 @@ if (isset($_POST['id']) && isset($_POST['reason']) && is_logged() && check_user_
     $admin = get_admin_info()['id'];
     $admin_name = get_admin_info()['nickname'];
     $insertion = mysqli_query($GLOBALS['conn'], "UPDATE food_orders SET marked=2, cancel_reason='" . $reason . "',canceled_by=$admin,canceled_date='$date' WHERE id='$id'");
-    mysqli_query($GLOBALS['conn'], "INSERT INTO live_notify(page,type,data) VALUES('order', 'cancel','$id')");
+
+    $jwt = generateJWT([
+        "channel" => $GLOBALS['channel'],
+        "iat" => time(),
+        "exp" => time() + 3600
+    ]);
+
+    sendWebSocketCurl(["orderId" => $id], "cancel-order", $jwt);
 
     logg('live orders', "لقد قام $admin_name بالغاء الطلب رقم $id");
 
