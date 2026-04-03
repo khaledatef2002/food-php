@@ -361,6 +361,11 @@ $sunmi_print = $fetch['value'];
                 !audio.currentAudio.ended &&
                 audio.currentAudio.readyState > 2;
         }
+
+        $(".copy-button").click(function() {
+            var vl = $(this).parent().find("span:eq(0)").text().trim()
+            navigator.clipboard.writeText(vl)
+        })
     </script>
 </body>
 
