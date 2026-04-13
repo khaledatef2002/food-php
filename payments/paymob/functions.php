@@ -111,7 +111,7 @@ function validate_redirect_payment_response($get_params)
     return $hmac === $get_params['hmac'];
 }
 
-function validate_webhook($data, $hmac) {
+function validate_webhook($data, $received_hmac) {
     $order_obj = $data['obj'] ?? [];
 
     $keys = [
@@ -165,7 +165,7 @@ function validate_webhook($data, $hmac) {
 
     $calculated_hmac = hash_hmac('sha256', $hmac, $paymob_hmac);
 
-    if ($calculated_hmac === $hmac) {
+    if ($calculated_hmac === $received_hmac) {
         return true;
     }
 
