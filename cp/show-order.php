@@ -262,76 +262,82 @@ $sunmi_print = $fetch['value'];
         var audio = new Audio('notification_sound.mp3');
         audio.loop = true;
 
-        const socket = io("<?php echo $GLOBALS['websocket_base_url']; ?>", {
-            auth: {
+        const worker = new Worker("js/worker.js");
+        worker.postMessage({
+            type: "INIT",
+            payload: {
+                url: "<?php echo $GLOBALS['websocket_base_url']; ?>",
                 token: "<?php echo generateJWT(["channel" => $GLOBALS['channel'], "iat" => time(), "exp" => time() + 3600]); ?>"
             }
-        }); 
+        });
 
-        socket.on("order:new", (data) => {
-            $.post("ajax/check_unmarked.php", {
-                id: data.orderId,
-            }, function(result) {
-                if (result == "true") {
-                    audio.play()
-                    try {
-                        var notify = new Notification(
-                            `لقد تم اضافة طلب جديد!`, {
-                                body: `رقم الاوردر #${data.orderId}`,
-                                icon: '../<?php echo $site_setting['site-logo']; ?>'
+        worker.onmessage = function(event) {
+            console.log(event)
+            const { type, data } = event.data;
+            switch (type) {
+                case "order:new":
+                    $.post("ajax/check_unmarked.php", {
+                        id: data.orderId,
+                    }, function(result) {
+                        if (result == "true") {
+                            audio.play()
+                            try {
+                                var notify = new Notification(
+                                    `لقد تم اضافة طلب جديد!`, {
+                                        body: `رقم الاوردر #${data.orderId}`,
+                                        icon: '../<?php echo $site_setting['site-logo']; ?>'
+                                    }
+                                );
+                                notify.onclick = function() {
+                                    window.focus();
+                                    notification.close();
+                                };
+                                notify.addEventListener("error", e => {
+                                    alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
+                                })
+                            } catch (e) {
+                                console.error("Notification error:", e);
                             }
-                        );
-                        notify.onclick = function() {
-                            window.focus();
-                            notification.close();
-                        };
-                        notify.addEventListener("error", e => {
-                            alert("فشل ارسال اشعار بالطلب الجديد، يرجى التحقق من اعطاء النظام جميع الصلاحيات الازمة!")
-                        })
-                    } catch (e) {
-                        console.error("Notification error:", e);
-                    }
-                } else {
-                    audio.pause()
-                }
-            })
-        });
-
-        socket.on("order:approve", (data) => {
-            $.post("ajax/check_unmarked.php", {
-                id: data.orderId,
-            }, function(result) {
-                if (result == "true") {
-                    audio.play()
-                } else {
-                    audio.pause()
-                }
-            })
-        });
-
-        socket.on("order:cancel", (data) => {
-            $.post("ajax/check_unmarked.php", {
-                id: data.orderId,
-            }, function(result) {
-                if (result == "true") {
-                    audio.play()
-                } else {
-                    audio.pause()
-                }
-            })
-        });
-
-        socket.on("order:remove", (data) => {
-            $.post("ajax/check_unmarked.php", {
-                id: data.orderId,
-            }, function(result) {
-                if (result == "true") {
-                    audio.play()
-                } else {
-                    audio.pause()
-                }
-            })
-        });
+                        } else {
+                            audio.pause()
+                        }
+                    })
+                    break;
+                case "order:approve":
+                    $.post("ajax/check_unmarked.php", {
+                        id: data.orderId,
+                    }, function(result) {
+                        if (result == "true") {
+                            audio.play()
+                        } else {
+                            audio.pause()
+                        }
+                    })
+                    break;
+                case "order:cancel":
+                    $.post("ajax/check_unmarked.php", {
+                        id: data.orderId,
+                    }, function(result) {
+                        if (result == "true") {
+                            audio.play()
+                        } else {
+                            audio.pause()
+                        }
+                    })
+                    break;
+                case "order:remove":
+                    $.post("ajax/check_unmarked.php", {
+                        id: data.orderId,
+                    }, function(result) {
+                        if (result == "true") {
+                            audio.play()
+                        } else {
+                            audio.pause()
+                        }
+                    })
+                    break;
+            }
+        }
 
         if (!window.Notification) {
             console.log('Browser does not support notifications.');
