@@ -165,6 +165,7 @@
                                 console.error("Notification error:", e);
                             }
                         }
+                        check_live_order_visibility()
                     });
                     break;
                 case "order:approve":
@@ -181,6 +182,7 @@
                                 audio.pause()
                             }
                         }
+                        check_live_order_visibility()
                     })
                     break;
                 case "order:cancel":
@@ -198,6 +200,7 @@
                                 audio.pause()
                             }
                         }
+                        check_live_order_visibility()
                     })
                     break;
                 case "order:remove":
@@ -211,6 +214,7 @@
                         } else {
                             audio.pause()
                         }
+                        check_live_order_visibility()
                     })
                     break;
             }
