@@ -19,7 +19,7 @@ if (in_array($_POST['active'], array(0, 1, 2)) && isset($_POST['item_name']) && 
         }
 
         if (isset($_POST['size_type']) && $_POST['size_type'] == 0) {
-            $item_price = filter_var($_POST['size_price'][0], FILTER_SANITIZE_NUMBER_FLOAT);
+            $item_price = filter_var($_POST['size_price'][0], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             foreach ($_POST['size_name'] as $key => $val) {
                 if (empty($val) || empty($_POST['size_price'][$key])) {
                     echo json_encode(array("msg" => "error", "body" => "يرجى ادخال جميع بيانات الحجم"));
@@ -27,7 +27,7 @@ if (in_array($_POST['active'], array(0, 1, 2)) && isset($_POST['item_name']) && 
                 }
             }
         } else {
-            $item_price = filter_var($_POST['item_price'], FILTER_SANITIZE_NUMBER_FLOAT);
+            $item_price = filter_var($_POST['item_price'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         }
 
         if (isset($_POST['option'])) {
@@ -44,8 +44,8 @@ if (in_array($_POST['active'], array(0, 1, 2)) && isset($_POST['item_name']) && 
                 }
             }
         }
-        $old_price = filter_var($_POST['item_price_before'], FILTER_SANITIZE_NUMBER_FLOAT);
-        $tax = filter_var($_POST['item_tax'], FILTER_SANITIZE_NUMBER_FLOAT);
+        $old_price = filter_var($_POST['item_price_before'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $tax = filter_var($_POST['item_tax'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
         if ($active == 2) {
             if (empty($_POST['item_start_date']) || empty($_POST['item_start_time']) || empty($_POST['item_end_date']) || empty($_POST['item_end_time'])) {
