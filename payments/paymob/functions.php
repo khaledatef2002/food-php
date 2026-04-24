@@ -120,7 +120,7 @@ function validate_webhook($data, $received_hmac) {
         'currency',
         'error_occured',
         'has_parent_transaction',
-        'obj.id',             
+        'id',             
         'integration_id',
         'is_3d_secure',
         'is_auth',
@@ -151,19 +151,25 @@ function validate_webhook($data, $received_hmac) {
         return $value;
     }
 
+
     $hmac = '';
     foreach ($keys as $key) {
         if ($key === 'obj.id') {
-            $hmac .= $order_obj['id'] ?? '';
+            $value = $order_obj['id'] ?? '';
         } else {
-            $hmac .= get_nested_value($order_obj, $key);
+            $value = get_nested_value($order_obj, $key);
         }
+
+        if (is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
+        $hmac .= $value;
     }
 
     $get_paymob_hmac = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='paymob_hmac'");
     $paymob_hmac = mysqli_fetch_assoc($get_paymob_hmac)['value'];
 
-    $calculated_hmac = hash_hmac('sha256', $hmac, $paymob_hmac);
+    $calculated_hmac = hash_hmac('sha512', $hmac, $paymob_hmac);
 
     if ($calculated_hmac === $received_hmac) {
         return true;
