@@ -6,6 +6,9 @@
     $get_min_order_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_min'");
     $min_order = mysqli_fetch_assoc($get_min_order_settings)['value'];
 
+    $get_allow_item_notes = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='allow-item-notes'");
+    $allow_item_notes = mysqli_fetch_assoc($get_allow_item_notes)['value'];
+
     if(!is_work() || is_disabled())
     {
         http_response_code(500);
@@ -149,7 +152,13 @@
         $price = mysqli_real_escape_string($GLOBALS['conn'], $price);
         $size = mysqli_real_escape_string($GLOBALS['conn'], $size);
         $size_name = mysqli_real_escape_string($GLOBALS['conn'], $size_name);
-        $insert_item = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name) VALUES('".$order_id."','".$item['item_id']."','".$item_info['title']."','".$item['count']."','".$price."','".$size."','$size_name')"); 
+
+        $item_notes = '';
+        if(isset($item['notes']) && !empty(trim($item['notes'])) && $allow_item_notes == 1) {
+            $item_notes = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars(substr(trim($item['notes']), 0, 100)));
+        }
+
+        $insert_item = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name,notes) VALUES('".$order_id."','".$item['item_id']."','".$item_info['title']."','".$item['count']."','".$price."','".$size."','$size_name','$item_notes')");
         $order_card_id = mysqli_insert_id($GLOBALS['conn']);
 
         if(isset($item['options']))

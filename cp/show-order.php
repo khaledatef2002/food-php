@@ -43,6 +43,10 @@ $currency = $fetch['value'];
 $get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='sunmi_print'");
 $fetch = mysqli_fetch_assoc($get_settings);
 $sunmi_print = $fetch['value'];
+
+$get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='allow-item-notes'");
+$fetch = mysqli_fetch_assoc($get_settings);
+$allow_item_notes = $fetch['value'];
 ?>
 
 <body class="g-sidenav-show rtl bg-gray-200">
@@ -184,6 +188,15 @@ $sunmi_print = $fetch['value'];
                                                 <?php
                                                 echo ($option['option_price'] > 0) ? "[+" . $option['option_price'] . " " . $currency . "]" : '';
                                                 ?>
+                                            </label>
+                                        </div>
+                                    <?php } ?>
+
+                                    <!-- For item notes -->
+                                    <?php if (!empty(trim($cart['notes'])) && $allow_item_notes == 1) { ?>
+                                        <div>
+                                            <label style="text-align:right;">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>ملاحظات العميل:</strong> <?php echo htmlspecialchars($cart['notes']); ?>
                                             </label>
                                         </div>
                                     <?php } ?>

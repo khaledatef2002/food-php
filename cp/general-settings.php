@@ -103,6 +103,17 @@
                                         </div>
                                     </p>
                                     <p class="font-weight-bold text-dark">
+                                        <label for="allow_item_notes" class="font-weight-bold text-dark">السماح بملاحظات المنتجات:</label>
+                                        <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
+                                            <label class="btn btn-secondary" for="allow_item_notes1">
+                                                <input <?php echo ($site_setting['allow-item-notes'] == 1) ? 'CHECKED' : ''; ?> type="radio" name="allow_item_notes" id="allow_item_notes1" value="1"> متاح
+                                            </label>
+                                            <label class="btn btn-secondary" for="allow_item_notes2">
+                                                <input <?php echo ($site_setting['allow-item-notes'] == 0) ? 'CHECKED' : ''; ?> type="radio" name="allow_item_notes" id="allow_item_notes2" value="0"> غير متاح
+                                            </label>
+                                        </div>
+                                    </p>
+                                    <p class="font-weight-bold text-dark">
                                         <label for="order_av" class="font-weight-bold text-dark">اتاحية الطلب:</label>
                                         <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
                                             <label class="btn btn-secondary" for="order_av1">

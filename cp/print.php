@@ -73,6 +73,10 @@ $get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings W
 $fetch = mysqli_fetch_assoc($get_settings);
 $currency = $fetch['value'];
 
+$get_settings = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='allow-item-notes'");
+$fetch = mysqli_fetch_assoc($get_settings);
+$allow_item_notes = $fetch['value'];
+
 $get_order = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_orders WHERE id='" . $id . "'");
 $order = mysqli_fetch_assoc($get_order);
 $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart WHERE order_id='$id'");
@@ -157,6 +161,11 @@ $get_cart_info = mysqli_query($GLOBALS['conn'], "SELECT * FROM food_order_cart W
                         </tr>
                     <?php endif; ?>
                 <?php endwhile; ?>
+                <?php if (!empty(trim($cart['notes'])) && $allow_item_notes == 1): ?>
+                    <tr class="border">
+                        <td class="pe-3" colspan="2" style="font-style: italic; color: #666;">ملاحظات: <?php echo htmlspecialchars($cart['notes']); ?></td>
+                    </tr>
+                <?php endif; ?>
             <?php } ?>
         </tbody>
         <?php if ($order['client_notice'] != ""): ?>

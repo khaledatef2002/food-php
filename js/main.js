@@ -128,10 +128,16 @@ var step = 0
 
 $(".food-item").click(function(){
   var id = $(this).attr("data-id")
-  
+
   item_info.show();
   open_item(id, this)
   step = 1;
+})
+
+// Character counter for item notes
+$(document).on('input', '#item_notes', function(){
+  var length = $(this).val().length;
+  $("#item_info").find(".notes-counter").text(length);
 })
 
 
@@ -142,7 +148,9 @@ function open_item(id, me)
   $("#item_info").find(".options").html("")
   $("#item_info").find(".item-sizes").hide();
   $("#item_info").find(".item-sizes ul li").remove();
-  
+  $("#item_info").find("#item_notes").val("");
+  $("#item_info").find(".notes-counter").text("0");
+
   // Clone Image
   var image = $(me).find("img").clone();
   image.css('width', '100%')
@@ -329,11 +337,15 @@ $("#item_info #add_item_button").click(function(){
   }
 
 
+  // Get notes value
+  var notes = $("#item_notes").val().trim().substring(0, 100);
+
   data = {
     id:id,
     count: current_count,
     size_id: size_id,
-    options: options
+    options: options,
+    notes: notes
   }
   // check working period also
   $.post("ajax/add_item_cart.php", {data:data}, function(result){
@@ -588,7 +600,12 @@ $("#user_info button:last-of-type").click(function(){
 
           })
         }
-        
+
+        if(item.notes != undefined && item.notes.trim() !== '')
+        {
+          content = content + `<div class="ps-1 mt-1" style="margin:auto;width:100%;color: #666;font-size: 0.9rem !important; font-style: italic;">${item.notes}</div>`;
+        }
+
         content = content + "</div><br>"
         $("#final_info .items").append(content)
       })

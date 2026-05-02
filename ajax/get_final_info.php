@@ -120,6 +120,9 @@ foreach ($cart as $key => $item) {
         }
         $data_item["options"] = $options;
     }
+    if (isset($item['notes']) && !empty(trim($item['notes'])) && $site_setting['allow-item-notes'] == 1) {
+        $data_item["notes"] = $item['notes'];
+    }
     array_push($data['items'], $data_item);
 }
 

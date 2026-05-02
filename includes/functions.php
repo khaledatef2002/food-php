@@ -567,7 +567,7 @@ function save_visa_order($order)
 
             $get_cart_data = mysqli_query($GLOBALS['conn'], "SELECT * FROM visa_cart_req WHERE order_id='" . $order_data['id'] . "'");
             while ($cart_data = mysqli_fetch_assoc($get_cart_data)) {
-                $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name) VALUES('" . $order_id . "','" . $cart_data['item_id'] . "','" . $cart_data['item_name'] . "','" . $cart_data['item_count'] . "','" . $cart_data['item_price'] . "','" . $cart_data['item_size'] . "','" . $cart_data['item_size_name'] . "')");
+                $insert_cart_data = mysqli_query($GLOBALS['conn'], "INSERT INTO food_order_cart(order_id,item_id,item_name,item_count,item_price,item_size,item_size_name,notes) VALUES('" . $order_id . "','" . $cart_data['item_id'] . "','" . $cart_data['item_name'] . "','" . $cart_data['item_count'] . "','" . $cart_data['item_price'] . "','" . $cart_data['item_size'] . "','" . $cart_data['item_size_name'] . "','" . $cart_data['notes'] . "')");
 
                 $order_card_id = mysqli_insert_id($GLOBALS['conn']);
 

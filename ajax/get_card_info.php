@@ -42,6 +42,9 @@ foreach ($cart as $key => $item) { ?>
                                 echo "<br>";
                             }
                         }
+                        if (isset($item['notes']) && !empty(trim($item['notes'])) && $site_setting['allow-item-notes'] == 1) {
+                            echo '<span style="color: #666; font-style: italic;"><strong>ملاحظات:</strong> ' . htmlspecialchars($item['notes']) . '</span>';
+                        }
                         ?>
                     </p>
                 </h3>

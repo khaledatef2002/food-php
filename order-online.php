@@ -214,6 +214,16 @@
           <div class="options">
 
           </div>
+          <?php if ($site_setting['allow-item-notes'] == 1): ?>
+          <div class="item-notes" style="margin-bottom:10px !important;width:90%;margin:auto;">
+            <hr>
+            <label for="item_notes" class="fs-6" style="font-weight: bold;">ملاحظات: <span class="fs-6 text-muted" style="font-weight: normal;">(<?php echo __('optional'); ?>)</span></label>
+            <textarea id="item_notes" class="form-control bg-light" maxlength="100" placeholder="ادخل ملاحظاتك هنا..." style="width:100%;resize:none;min-height:60px;"></textarea>
+            <div class="text-end text-muted" style="font-size: 12px;margin-top: 2px;">
+              <span class="notes-counter">0</span>/100
+            </div>
+          </div>
+          <?php endif; ?>
         </div>
         <div class="modal-footer" style="text-align: center;display: flex;flex-direction: row;padding: 7px 5px;justify-content: center;column-gap: 5px;">
           <button data-bs-dismiss="modal" class=" d-flex justify-content-center align-items-center" style="background: #a7a7a7;color: white;border-radius: 5px;height: 35px;padding: 5px 5px;display: inline-block;margin: auto;font-weight: bold;font-size: 16px;border: 0;flex: 1;"><?php echo __('close'); ?></button>

@@ -38,6 +38,10 @@
                 {
                     $new_item['options'] = $data['options'];
                 }
+                if(isset($data['notes']) && !empty(trim($data['notes'])))
+                {
+                    $new_item['notes'] = substr(trim($data['notes']), 0, 100);
+                }
                 array_push($cart, $new_item);
             }
     
