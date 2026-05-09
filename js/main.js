@@ -338,7 +338,7 @@ $("#item_info #add_item_button").click(function(){
 
 
   // Get notes value
-  var notes = $("#item_notes").val().trim().substring(0, 100);
+  var notes = $("#item_notes").length ? $("#item_notes").val().trim().substring(0, 100) : "";
 
   data = {
     id:id,
