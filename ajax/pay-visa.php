@@ -101,7 +101,14 @@ function save_pending_order($data, $visa_tax)
     }
     else if($data['type'] == 'delivery')
     {
-        if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
+        $get_deliver_available = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='delivery_available'");
+        $deliver_available = mysqli_fetch_assoc($get_deliver_available)['value'];
+
+        if($deliver_available == 0)
+        {
+            exit();
+        }
+        else if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
         {
             exit();
         }

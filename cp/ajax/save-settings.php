@@ -21,6 +21,7 @@ if (
     isset($_POST['min_order']) &&
     isset($_POST['website_taxs']) &&
     in_array($_POST['order_av'], [0, 1]) &&
+    in_array($_POST['deliver_available'], [0, 1]) &&
     isset($_POST['order_av_reason']) &&
     isset($_POST['time_msg']) &&
     in_array($_POST['wh_av'], [0, 1]) &&
@@ -32,6 +33,14 @@ if (
             echo json_encode([
                 'res' => 'error',
                 'msg' => 'يرجى ادخال رقم الواتساب'
+            ]);
+            exit;
+        }
+
+        if ($_POST['deliver_available'] == 0 && $_POST['order_from_branch'] == 0) {
+            echo json_encode([
+                'res' => 'error',
+                'msg' => 'يجب اتاحة التوصيل او الاستلام من الفرع على الاقل'
             ]);
             exit;
         }
@@ -51,6 +60,7 @@ if (
         $dir = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['dir']));
         $lang = mysqli_real_escape_string($GLOBALS['conn'], htmlspecialchars($_POST['lang']));
         $order_from_branch = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['order_from_branch'], FILTER_SANITIZE_NUMBER_INT));
+        $deliver_available = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['deliver_available'], FILTER_SANITIZE_NUMBER_INT));
         $allow_item_notes = mysqli_real_escape_string($GLOBALS['conn'], filter_var($_POST['allow_item_notes'], FILTER_SANITIZE_NUMBER_INT));
 
 
@@ -70,6 +80,7 @@ if (
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$dir' WHERE title='dir'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$lang' WHERE title='lang'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$order_from_branch' WHERE title='order_from_branch'");
+        $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$deliver_available' WHERE title='delivery_available'");
         $update = mysqli_query($GLOBALS['conn'], "UPDATE website_settings SET value='$allow_item_notes' WHERE title='allow-item-notes'");
 
         if (isset($_FILES['website_logo']) && !empty($_FILES['website_logo']) && $_FILES["website_logo"]["error"] == 0) {

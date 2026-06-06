@@ -128,6 +128,10 @@ $("input[name='order-type']").change(function(){
     }
 })
 
+// Sync delivery fields visibility with whichever order type is selected by default
+// (it isn't always 'delivery' anymore, e.g. when delivery is disabled from the dashboard)
+$("input[name='order-type']:checked").trigger("change");
+
 function show_delivery_fields() {
   $("#choose-area-input").show();
   $("#choose-street-input").show();

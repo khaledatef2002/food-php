@@ -103,6 +103,17 @@
                                         </div>
                                     </p>
                                     <p class="font-weight-bold text-dark">
+                                        <label for="deliver_available" class="font-weight-bold text-dark">اتاحية التوصيل:</label>
+                                        <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
+                                            <label class="btn btn-secondary" for="deliver_available1">
+                                                <input <?php echo ($site_setting['delivery_available'] == 1) ? 'CHECKED' : ''; ?> type="radio" name="deliver_available" id="deliver_available1" value="1"> متاح
+                                            </label>
+                                            <label class="btn btn-secondary" for="deliver_available2">
+                                                <input <?php echo ($site_setting['delivery_available'] == 0) ? 'CHECKED' : ''; ?> type="radio" name="deliver_available" id="deliver_available2" value="0"> غير متاح
+                                            </label>
+                                        </div>
+                                    </p>
+                                    <p class="font-weight-bold text-dark">
                                         <label for="allow_item_notes" class="font-weight-bold text-dark">السماح بملاحظات المنتجات:</label>
                                         <div class="d-flex justify-content-evenly hide-radio" data-toggle="buttons">
                                             <label class="btn btn-secondary" for="allow_item_notes1">

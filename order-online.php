@@ -284,30 +284,28 @@
             $order_info = json_decode($_COOKIE['order_info']);
           }
           ?>
-          <div class="justify-content-evenly align-items-center mt-3" style="<?php echo $site_setting['order_from_branch'] == 1 ? 'display: flex' : 'display: none'; ?>">
-            <div role="button">
-                <input type="radio" class="btn-check" name="order-type" id="order-type-delivery" value="delivery" autocomplete="off" checked>
+          <?php
+            $delivery_available = $site_setting['delivery_available'] == 1;
+            $branch_available = $site_setting['order_from_branch'] == 1;
+          ?>
+          <div class="justify-content-evenly align-items-center mt-3" style="<?php echo ($delivery_available || $branch_available) ? 'display: flex' : 'display: none'; ?>">
+            <div role="button" style="<?php echo $delivery_available ? '' : 'display:none;'; ?>">
+                <input type="radio" class="btn-check" name="order-type" id="order-type-delivery" value="delivery" autocomplete="off" <?php echo $delivery_available ? 'checked' : ''; ?>>
                 <label class="btn btn-secondary border-0 d-flex flex-column justify-content-center align-items-center gap-1" for="order-type-delivery">
                     <img class="p-2" src="imgs/delivery-icon.png" width="60px">
                     <span class="fw-bold">توصيل</span>
                 </label>
             </div>
-            <?php
-              if ($site_setting['order_from_branch'] == 1) {
-            ?>
-            <div role="button">
-                <input type="radio" class="btn-check" name="order-type" id="order-type-branch" value="branch" autocomplete="off">
+            <div role="button" style="<?php echo $branch_available ? '' : 'display:none;'; ?>">
+                <input type="radio" class="btn-check" name="order-type" id="order-type-branch" value="branch" autocomplete="off" <?php echo (!$delivery_available && $branch_available) ? 'checked' : ''; ?>>
                 <label class="btn btn-secondary border-0 d-flex flex-column justify-content-center align-items-center gap-1" for="order-type-branch">
                     <img class="p-2" src="imgs/branch-icon.png" width="60px">
                     <span class="fw-bold">استلام من الفرع</span>
                 </label>
             </div>
-            <?php } ?>
           </div>
-          <?php
-            if ($site_setting['order_from_branch'] == 1) {
-          ?>
-            <hr> 
+          <?php if ($delivery_available && $branch_available) { ?>
+            <hr>
           <?php } ?>
           <div class="mt-3" style="margin:auto;width:80%;margin-bottom:10px;">
             <label><?php echo __('name'); ?> <span style="font-size: 10px;color: gray;">(<?php echo __('at_least_2'); ?>)</span></label>

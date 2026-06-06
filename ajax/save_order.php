@@ -9,6 +9,9 @@
     $get_allow_item_notes = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='allow-item-notes'");
     $allow_item_notes = mysqli_fetch_assoc($get_allow_item_notes)['value'];
 
+    $get_deliver_available = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='delivery_available'");
+    $deliver_available = mysqli_fetch_assoc($get_deliver_available)['value'];
+
     if(!is_work() || is_disabled())
     {
         http_response_code(500);
@@ -47,7 +50,12 @@
     }
     else if($data['type'] == 'delivery')
     {
-        if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
+        if($deliver_available == 0)
+        {
+            http_response_code(500);
+            die();
+        }
+        else if(empty(trim($data['client_location'])) || is_nan($data['client_location']))
         {
             http_response_code(500);
             die();

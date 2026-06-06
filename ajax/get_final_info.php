@@ -34,6 +34,14 @@ $rec['phone'] = filter_var(trim($rec['phone']), FILTER_SANITIZE_NUMBER_INT);
 $order_from_branch = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='order_from_branch'");
 $order_from_branch = mysqli_fetch_assoc($order_from_branch);
 
+// Get if delivery is enabled
+$get_deliver_available = mysqli_query($GLOBALS['conn'], "SELECT * FROM website_settings WHERE title='delivery_available'");
+$deliver_available = mysqli_fetch_assoc($get_deliver_available)['value'];
+
+if ($rec['type'] == 'delivery' && $deliver_available == 0) {
+    http_response_code(500);
+    die();
+}
 
 if($rec['type'] == 'delivery' || $order_from_branch['value'] == 0) {
     $rec['del'] = filter_var($rec['del'], FILTER_SANITIZE_NUMBER_INT);
